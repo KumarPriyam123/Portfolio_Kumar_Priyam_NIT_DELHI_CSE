@@ -14,6 +14,39 @@ export interface Project {
 
 export const projects: Project[] = [
   {
+    slug: 'jobmatch',
+    title: 'JobMatch: Semantic Job-Matching Platform',
+    description:
+      'Multi-tenant platform ranking remote jobs against your résumé via Gemini vector embeddings and pgvector.',
+    tags: [
+      'Next.js 15',
+      'FastAPI',
+      'Supabase/pgvector',
+      'Google Gemini',
+      'n8n',
+      'Docker',
+      'Cloudflare Tunnel',
+    ],
+    category: 'fullstack',
+    problem:
+      'Keyword job boards flood candidates with noise while the roles that actually fit their experience get buried. Matching by keyword overlap fails to capture whether a job truly aligns with a résumé, and single-user automation scripts cannot serve multiple users with isolated, private data.',
+    approach:
+      'Treated matching as a semantic retrieval problem: embedded both résumés and job descriptions into the same 768-dimension Gemini vector space and ranked every job by pgvector cosine similarity. Built an idempotent n8n ingestion pipeline pulling from Adzuna and RemoteOK daily with SHA-256 URL-hash deduplication, and enforced true multi-tenancy with Postgres Row-Level Security and asymmetric ES256/JWKS JWT verification.',
+    outcome:
+      'Shipped a live multi-user product self-hosted on a DigitalOcean droplet behind a Cloudflare Tunnel (zero open inbound ports) with the Next.js frontend on Vercel. First live ingestion pulled 72 real jobs into the shared pool; matching, auth isolation, dedup, ingestion, and the opt-in nightly email digest were each verified end to end.',
+    githubUrl: 'https://github.com/KumarPriyam123/JobAutomation',
+    liveUrl: 'https://job-automation-orcin.vercel.app',
+    highlights: [
+      'Semantic matching over keyword search — Gemini 768-d L2-normalized embeddings (RETRIEVAL_QUERY for résumés, RETRIEVAL_DOCUMENT for jobs) ranked by pgvector ivfflat cosine index',
+      'Database-enforced multi-tenancy via Postgres Row-Level Security — per-request transaction sets request.jwt.claims and SET LOCAL role authenticated so auth.uid() resolves inside the DB',
+      'Asymmetric JWT verification — caches Supabase JWKS public keyset and verifies ES256 tokens locally, no per-request round-trip to the auth server',
+      'Idempotent daily ingestion in n8n from Adzuna + RemoteOK with SHA-256 url_hash dedup enforced at the DB level (ON CONFLICT DO NOTHING)',
+      'Multi-résumé support with best-fit attribution — DISTINCT ON … ORDER BY score DESC surfaces each job once under its strongest-matching résumé',
+      'Opt-in nightly email digest (off by default) of top matches, enforced at the query layer and toggled per user',
+      'Self-hosted FastAPI in Docker Compose behind a Cloudflare Tunnel on a custom .me domain — API binds only to loopback, no inbound ports open',
+    ],
+  },
+  {
     slug: 'marl-maps',
     title: 'MARL-MAPS: Dynamic Multi-Agent RL for Optimized RAG',
     description:
