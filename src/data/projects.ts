@@ -35,7 +35,7 @@ export const projects: Project[] = [
     outcome:
       'Shipped a live multi-user product self-hosted on a DigitalOcean droplet behind a Cloudflare Tunnel (zero open inbound ports) with the Next.js frontend on Vercel. First live ingestion pulled 72 real jobs into the shared pool; matching, auth isolation, dedup, ingestion, and the opt-in nightly email digest were each verified end to end.',
     githubUrl: 'https://github.com/KumarPriyam123/JobAutomation',
-    liveUrl: 'https://job-automation-orcin.vercel.app',
+    liveUrl: 'https://jobmatch.kpriyam.me/login',
     highlights: [
       'Semantic matching over keyword search — Gemini 768-d L2-normalized embeddings (RETRIEVAL_QUERY for résumés, RETRIEVAL_DOCUMENT for jobs) ranked by pgvector ivfflat cosine index',
       'Database-enforced multi-tenancy via Postgres Row-Level Security — per-request transaction sets request.jwt.claims and SET LOCAL role authenticated so auth.uid() resolves inside the DB',
