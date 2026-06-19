@@ -29,9 +29,28 @@ export default function ConnectPage() {
     setFormStatus('submitting');
 
     try {
-      await new Promise((resolve) => setTimeout(resolve, 1500));
-      setFormStatus('success');
-      setFormData({ name: '', email: '', message: '' });
+      const res = await fetch('https://api.web3forms.com/submit', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Accept: 'application/json',
+        },
+        body: JSON.stringify({
+          access_key: '963e0eba-de5e-44ab-b4a4-8dfb963cf785',
+          name: formData.name,
+          email: formData.email,
+          message: formData.message,
+          subject: 'New message from portfolio contact form',
+          from_name: 'Portfolio Contact',
+        }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        setFormStatus('success');
+        setFormData({ name: '', email: '', message: '' });
+      } else {
+        setFormStatus('error');
+      }
     } catch {
       setFormStatus('error');
     }
