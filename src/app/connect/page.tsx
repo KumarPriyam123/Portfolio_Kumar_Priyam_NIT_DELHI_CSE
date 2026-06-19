@@ -36,7 +36,7 @@ export default function ConnectPage() {
           Accept: 'application/json',
         },
         body: JSON.stringify({
-          access_key: '963e0eba-de5e-44ab-b4a4-8dfb963cf785',
+          access_key: '79001377-2d40-48d5-af4c-4a629bedb258',
           name: formData.name,
           email: formData.email,
           message: formData.message,
