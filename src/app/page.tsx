@@ -463,7 +463,7 @@ export default function Home() {
                     </p>
                   </div>
                   <svg
-                    className="h-5 w-5 text-zinc-300 dark:text-zinc-650 transition-colors group-hover:text-indigo-500"
+                    className="h-5 w-5 text-zinc-300 dark:text-zinc-600 transition-colors group-hover:text-indigo-500"
                     fill="none"
                     viewBox="0 0 24 24"
                     stroke="currentColor"
@@ -480,7 +480,7 @@ export default function Home() {
             </div>
             
             {/* Modal Footer */}
-            <div className="border-t border-zinc-150 bg-zinc-50 px-6 py-4 dark:border-zinc-800 dark:bg-zinc-950/40 text-center">
+            <div className="border-t border-zinc-200 bg-zinc-50 px-6 py-4 dark:border-zinc-800 dark:bg-zinc-950/40 text-center">
               <button
                 onClick={() => setShowResumeModal(false)}
                 className="font-mono text-xs text-zinc-500 hover:text-zinc-800 dark:text-zinc-400 dark:hover:text-zinc-200 transition-colors cursor-pointer"
