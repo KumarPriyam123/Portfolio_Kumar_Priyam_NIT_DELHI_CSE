@@ -84,7 +84,7 @@ export default function Navigation() {
               </a>
 
               <a
-                href="https://linkedin.com/in/kumar-priyam"
+                href="https://www.linkedin.com/in/kumar-priyam-71bbb82a7/"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100 transition-colors"
@@ -185,7 +185,7 @@ export default function Navigation() {
               </svg>
             </a>
             <a
-              href="https://linkedin.com/in/kumar-priyam"
+              href="https://www.linkedin.com/in/kumar-priyam-71bbb82a7/"
               target="_blank"
               rel="noopener noreferrer"
               className="text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100"

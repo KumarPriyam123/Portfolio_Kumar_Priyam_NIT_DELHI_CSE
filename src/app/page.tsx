@@ -433,7 +433,7 @@ export default function Home() {
 
                 {/* SDE + GenAI Option */}
                 <a
-                  href="https://drive.google.com/file/d/1sDOkbyz0YaCgN3EzVKoCykDRa7ZAyBo9/view"
+                  href="https://drive.google.com/file/d/1lPMTdrULT4iWPU5typRmVDVlBtF81wHf/view"
                   target="_blank"
                   rel="noopener noreferrer"
                   onClick={() => setShowResumeModal(false)}

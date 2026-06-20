@@ -237,7 +237,7 @@ export default function ConnectPage() {
 
                 {/* LinkedIn Button */}
                 <a
-                  href="https://linkedin.com/in/kumar-priyam"
+                  href="https://www.linkedin.com/in/kumar-priyam-71bbb82a7/"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="group flex flex-1 items-center justify-center gap-2 rounded-lg border border-zinc-200 bg-white px-4 py-3 text-sm font-medium text-zinc-700 shadow-sm transition-all hover:-translate-y-0.5 hover:border-indigo-300 hover:shadow-md dark:border-zinc-800 dark:bg-zinc-900/60 dark:text-zinc-300 dark:hover:border-indigo-600/50"
@@ -504,7 +504,7 @@ export default function ConnectPage() {
 
             {/* SDE + GenAI Resume */}
             <a
-              href="https://drive.google.com/file/d/1sDOkbyz0YaCgN3EzVKoCykDRa7ZAyBo9/view"
+              href="https://drive.google.com/file/d/1lPMTdrULT4iWPU5typRmVDVlBtF81wHf/view"
               target="_blank"
               rel="noopener noreferrer"
               className="group flex items-center gap-3 rounded-lg border border-zinc-200 bg-white px-4 py-3 shadow-sm transition-all hover:-translate-y-0.5 hover:border-indigo-300 hover:shadow-md dark:border-zinc-800 dark:bg-zinc-900/60 dark:hover:border-indigo-600/50"

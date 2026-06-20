@@ -15,7 +15,7 @@ const socialLinks = [
   },
   {
     name: 'linkedin',
-    href: 'https://linkedin.com/in/kumar-priyam',
+    href: 'https://www.linkedin.com/in/kumar-priyam-71bbb82a7/',
     ariaLabel: 'LinkedIn Profile',
   },
 ];
