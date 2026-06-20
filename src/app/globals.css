@@ -2,29 +2,119 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ─────────────────────────────────────────────
+   EDITORIAL DESIGN TOKENS
+   Theme flips on .dark — semantic colors only.
+   ───────────────────────────────────────────── */
+:root {
+  --paper: 250 248 243; /* warm off-white */
+  --surface: 255 254 250;
+  --ink: 26 24 21; /* warm near-black */
+  --muted: 104 97 86;
+  --faint: 161 152 139;
+  --rule: 224 217 206;
+  --accent: 196 67 38; /* terracotta / vermilion */
+  color-scheme: light;
+}
+
+.dark {
+  --paper: 20 18 14; /* warm near-black */
+  --surface: 29 26 21;
+  --ink: 243 238 228; /* warm off-white */
+  --muted: 167 157 142;
+  --faint: 112 103 91;
+  --rule: 48 43 35;
+  --accent: 233 110 71; /* warmer terracotta for dark */
+  color-scheme: dark;
+}
+
 @layer base {
   html {
     scroll-behavior: smooth;
   }
-
   body {
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
-      Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    font-family: 'Newsreader', ui-serif, Georgia, serif;
+    font-optical-sizing: auto;
+    font-size: 1.0625rem;
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
   }
-
-  pre,
-  code,
-  .font-mono {
-    font-family: 'Fira Code', ui-monospace, SFMono-Regular, Menlo, Monaco,
-      Consolas, 'Liberation Mono', 'Courier New', monospace;
+  ::selection {
+    background-color: rgb(var(--accent) / 0.22);
+    color: rgb(var(--ink));
+  }
+  /* Fraunces display tuning */
+  .font-display {
+    font-feature-settings: 'ss01', 'liga', 'dlig';
   }
 }
 
-/* Page entrance animation */
-@keyframes fadeInUp {
+/* ─────────────────────────────────────────────
+   REUSABLE EDITORIAL PRIMITIVES
+   ───────────────────────────────────────────── */
+@layer components {
+  /* Mono eyebrow / kicker */
+  .eyebrow {
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    font-size: 0.6875rem;
+    font-weight: 500;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: rgb(var(--muted));
+  }
+
+  /* Animated underline on links */
+  .link-underline {
+    background-image: linear-gradient(currentColor, currentColor);
+    background-size: 0% 1px;
+    background-position: 0 100%;
+    background-repeat: no-repeat;
+    transition: background-size 0.45s cubic-bezier(0.16, 1, 0.3, 1),
+      color 0.25s ease;
+  }
+  .link-underline:hover {
+    background-size: 100% 1px;
+  }
+
+  /* Drop cap for editorial body openings */
+  .dropcap::first-letter {
+    font-family: 'Fraunces', ui-serif, Georgia, serif;
+    font-weight: 300;
+    float: left;
+    font-size: 3.6em;
+    line-height: 0.72;
+    padding: 0.08em 0.12em 0 0;
+    color: rgb(var(--accent));
+  }
+}
+
+/* ─────────────────────────────────────────────
+   PAPER GRAIN OVERLAY
+   ───────────────────────────────────────────── */
+.grain::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  pointer-events: none;
+  opacity: 0.5;
+  mix-blend-mode: multiply;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.045'/%3E%3C/svg%3E");
+}
+.dark .grain::after {
+  mix-blend-mode: screen;
+  opacity: 0.6;
+}
+
+/* ─────────────────────────────────────────────
+   MOTION — staggered page-load reveals
+   ───────────────────────────────────────────── */
+@keyframes revealUp {
   from {
     opacity: 0;
-    transform: translateY(12px);
+    transform: translateY(18px);
   }
   to {
     opacity: 1;
@@ -32,74 +122,93 @@
   }
 }
 
-.animate-fade-in-up {
-  animation: fadeInUp 0.5s ease-out forwards;
+@keyframes revealFade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
-/* Custom Scrollbar Styles */
+@keyframes drawLine {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+.reveal {
+  opacity: 0;
+  animation: revealUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+.reveal-fade {
+  opacity: 0;
+  animation: revealFade 1s ease-out forwards;
+}
+.draw-line {
+  transform-origin: left center;
+  animation: drawLine 0.9s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.delay-1 {
+  animation-delay: 0.08s;
+}
+.delay-2 {
+  animation-delay: 0.16s;
+}
+.delay-3 {
+  animation-delay: 0.24s;
+}
+.delay-4 {
+  animation-delay: 0.34s;
+}
+.delay-5 {
+  animation-delay: 0.46s;
+}
+.delay-6 {
+  animation-delay: 0.6s;
+}
+
+/* ─────────────────────────────────────────────
+   SCROLLBAR
+   ───────────────────────────────────────────── */
 ::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+  width: 10px;
+  height: 10px;
 }
-
 ::-webkit-scrollbar-track {
   background: transparent;
 }
-
-.dark ::-webkit-scrollbar-thumb {
-  background: #27272a;
-  border-radius: 4px;
-}
-
 ::-webkit-scrollbar-thumb {
-  background: #e4e4e7;
-  border-radius: 4px;
+  background: rgb(var(--rule));
+  border-radius: 0;
+  border: 3px solid rgb(var(--paper));
 }
-
-.dark ::-webkit-scrollbar-thumb:hover {
-  background: #3f3f46;
-}
-
 ::-webkit-scrollbar-thumb:hover {
-  background: #d4d4d8;
+  background: rgb(var(--faint));
 }
 
-/* Selection colors */
-::selection {
-  background-color: rgba(52, 211, 153, 0.25);
-  color: inherit;
-}
-
-.dark ::selection {
-  background-color: rgba(52, 211, 153, 0.2);
-}
-
-/* Modal animation keyframes */
-@keyframes fadeIn {
-  from {
-    opacity: 0;
+/* ─────────────────────────────────────────────
+   REDUCED MOTION
+   ───────────────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
   }
-  to {
+  .reveal,
+  .reveal-fade {
     opacity: 1;
+    transform: none;
+  }
+  .draw-line {
+    transform: scaleX(1);
   }
 }
-
-@keyframes scaleIn {
-  from {
-    opacity: 0;
-    transform: scale(0.95);
-  }
-  to {
-    opacity: 1;
-    transform: scale(1);
-  }
-}
-
-.animate-fadeIn {
-  animation: fadeIn 0.2s ease-out forwards;
-}
-
-.animate-scaleIn {
-  animation: scaleIn 0.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-}
-

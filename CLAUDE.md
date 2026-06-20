@@ -43,17 +43,19 @@ No API calls, no CMS, no database. Pages import from `src/data/` directly.
 
 ### Theme system
 
-`ThemeContext.tsx` manages dark/light mode. On mount it reads `localStorage` (key `"theme"`), falls back to `prefers-color-scheme`. It applies `dark` class to `<html>` and sets `colorScheme`. Default is `'dark'`. The `<html>` tag has `suppressHydrationWarning` to avoid SSR/client mismatch on the class.
+`ThemeContext.tsx` manages dark/light mode. On mount it reads `localStorage` (key `"theme"`), falls back to `prefers-color-scheme`. It applies `dark` class to `<html>` and sets `colorScheme`. Default is `'light'` (the editorial design is light-primary; dark is a warm-ink variant). The `<html>` tag has `suppressHydrationWarning` to avoid SSR/client mismatch on the class.
 
-All pages use `'use client'` — there are no Server Components.
+All pages use `'use client'` except `research/page.tsx` (server component with exported `metadata`) — most pages are client components.
 
-### Styling conventions
+### Styling conventions ("Engineering Editorial" design system)
 
-- **Accent palette**: emerald (primary), indigo (secondary), zinc (neutrals)
-- **Dark mode**: all elements carry both light and `dark:` variants via Tailwind
-- **Typography**: `font-mono` = Fira Code, `font-sans` = Inter (configured in `tailwind.config.ts`)
-- **Terminal aesthetic**: monospace section labels use `// SCREAMING_SNAKE` style (e.g. `// SYSTEM_PROFILE`)
-- The `darkMode: 'class'` strategy is set in `tailwind.config.ts`
+- **Semantic colors via CSS variables** — the theme is defined once in `globals.css` as `:root` / `.dark` custom properties (`--paper --surface --ink --muted --faint --rule --accent`) and exposed as Tailwind colors in `tailwind.config.ts` (`bg-paper text-ink border-rule text-accent` …). **Do NOT use literal `zinc-`/`emerald-` classes or `dark:` variants** — the variables flip automatically on `.dark`, so every element is themed with a single set of classes.
+- **Accent**: terracotta/vermilion (`--accent`), one accent only — used sparingly.
+- **Typography**: `font-display` = Fraunces (serif headings), `font-serif` = Newsreader (body, default on `<body>`), `font-mono` = JetBrains Mono (labels/meta). Loaded via Google Fonts `<link>` in `layout.tsx`.
+- **Editorial primitives** in `globals.css` `@layer components`: `.eyebrow` (mono uppercase kicker), `.link-underline` (animated underline), `.dropcap` (first-letter), plus `.reveal`/`.reveal-fade`/`.draw-line` staggered load animations with `.delay-1`…`.delay-6`. A `.grain` overlay sits on `<body>`.
+- Section labels read like editorial kickers (`Section 01 — Profile`), not terminal `// SNAKE_CASE`.
+- The `darkMode: 'class'` strategy is set in `tailwind.config.ts`. `max-w-editorial` is the standard page width.
+- `SectionHeader.tsx` is unused dead code (still on the old palette); ignore it.
 
 ### Layout shell
 
@@ -61,8 +63,8 @@ All pages use `'use client'` — there are no Server Components.
 
 ### Resume links (hardcoded)
 
-Two Google Drive resume URLs appear in multiple files:
+Two Google Drive resume URLs appear in multiple files (each page defines a local `RESUMES` constant):
+- **AI + SDE**: `https://drive.google.com/file/d/1lPMTdrULT4iWPU5typRmVDVlBtF81wHf/view`
 - **Data Engineering**: `https://drive.google.com/file/d/1XJmW1XJ5lQ17fY251xmbZpC3lzsZgviR/view`
-- **SDE + GenAI**: `https://drive.google.com/file/d/1sDOkbyz0YaCgN3EzVKoCykDRa7ZAyBo9/view`
 
-These are repeated in `page.tsx`, `profile/page.tsx`, and `connect/page.tsx`. Update all three when the resume changes.
+These are repeated in `page.tsx` (résumé modal), `profile/page.tsx`, and `connect/page.tsx`. Update all three when the resume changes. The contact form on `/connect` posts to Web3Forms (access key inline in `connect/page.tsx`).

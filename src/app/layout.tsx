@@ -6,8 +6,8 @@ import './globals.css';
 
 export const metadata: Metadata = {
   title: {
-    default: 'Kumar Priyam | AI Engineer · SDE · Data Engineer',
-    template: '%s | Kumar Priyam',
+    default: 'Kumar Priyam — AI Engineer · SDE · Data Engineer',
+    template: '%s — Kumar Priyam',
   },
   description:
     'B.Tech Computer Science student at NIT Delhi (Class of 2027). Building multi-agent AI systems, full-stack platforms, and scalable data pipelines — from RAG architectures to production ETL.',
@@ -27,7 +27,7 @@ export const metadata: Metadata = {
   ],
   authors: [{ name: 'Kumar Priyam' }],
   openGraph: {
-    title: 'Kumar Priyam | AI Engineer · SDE · Data Engineer',
+    title: 'Kumar Priyam — AI Engineer · SDE · Data Engineer',
     description:
       'B.Tech CS @ NIT Delhi. Building multi-agent AI systems, full-stack platforms, and scalable data pipelines.',
     type: 'website',
@@ -49,11 +49,11 @@ export default function RootLayout({
           crossOrigin="anonymous"
         />
         <link
-          href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;700&family=Inter:wght@300;400;500;600;700;800&display=swap"
+          href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..900;1,9..144,300..600&family=Newsreader:ital,opsz,wght@0,6..72,400..600;1,6..72,400..500&family=JetBrains+Mono:wght@400;500;700&display=swap"
           rel="stylesheet"
         />
       </head>
-      <body className="font-sans antialiased bg-zinc-50 dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100 transition-colors duration-300">
+      <body className="grain font-serif antialiased bg-paper text-ink transition-colors duration-500">
         <ThemeProvider>
           <div className="flex min-h-screen flex-col">
             <Navigation />

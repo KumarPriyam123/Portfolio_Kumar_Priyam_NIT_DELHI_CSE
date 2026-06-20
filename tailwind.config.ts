@@ -10,8 +10,21 @@ const config: Config = {
   theme: {
     extend: {
       fontFamily: {
-        sans: ['Inter', 'sans-serif'],
-        mono: ['Fira Code', 'monospace'],
+        display: ['Fraunces', 'ui-serif', 'Georgia', 'serif'],
+        serif: ['Newsreader', 'ui-serif', 'Georgia', 'serif'],
+        mono: ['JetBrains Mono', 'ui-monospace', 'SFMono-Regular', 'monospace'],
+      },
+      colors: {
+        paper: 'rgb(var(--paper) / <alpha-value>)',
+        surface: 'rgb(var(--surface) / <alpha-value>)',
+        ink: 'rgb(var(--ink) / <alpha-value>)',
+        muted: 'rgb(var(--muted) / <alpha-value>)',
+        faint: 'rgb(var(--faint) / <alpha-value>)',
+        rule: 'rgb(var(--rule) / <alpha-value>)',
+        accent: 'rgb(var(--accent) / <alpha-value>)',
+      },
+      maxWidth: {
+        editorial: '76rem',
       },
     },
   },

@@ -12,7 +12,7 @@ interface ThemeContextType {
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
-  const [theme, setTheme] = useState<Theme>('dark'); // Default to dark mode for Developer Archetype
+  const [theme, setTheme] = useState<Theme>('light'); // Editorial is light-primary; dark is the warm-ink variant
 
   useEffect(() => {
     const savedTheme = localStorage.getItem('theme') as Theme | null;

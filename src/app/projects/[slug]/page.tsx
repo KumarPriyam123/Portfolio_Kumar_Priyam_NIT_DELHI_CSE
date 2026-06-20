@@ -5,22 +5,10 @@ import Link from 'next/link';
 import { useParams } from 'next/navigation';
 import { projects, getProjectBySlug } from '@/data/projects';
 
-const categoryStyles: Record<string, { bg: string; text: string; label: string }> = {
-  'data-engineering': {
-    bg: 'bg-indigo-500/10 dark:bg-indigo-400/10',
-    text: 'text-indigo-600 dark:text-indigo-400',
-    label: 'Data Engineering',
-  },
-  'ai-research': {
-    bg: 'bg-violet-500/10 dark:bg-violet-400/10',
-    text: 'text-violet-600 dark:text-violet-400',
-    label: 'AI Research',
-  },
-  fullstack: {
-    bg: 'bg-emerald-500/10 dark:bg-emerald-400/10',
-    text: 'text-emerald-600 dark:text-emerald-400',
-    label: 'Full-Stack',
-  },
+const categoryLabel: Record<string, string> = {
+  'data-engineering': 'Data Engineering',
+  'ai-research': 'AI Research',
+  fullstack: 'Full-Stack',
 };
 
 export default function ProjectDetailPage() {
@@ -32,206 +20,129 @@ export default function ProjectDetailPage() {
   const nextProject = currentIndex < projects.length - 1 ? projects[currentIndex + 1] : projects[0];
 
   useEffect(() => {
-    if (project) {
-      document.title = `${project.title} | Kumar Priyam`;
-    }
+    if (project) document.title = `${project.title} — Kumar Priyam`;
   }, [project]);
 
   if (!project) {
     return (
-      <div className="flex min-h-[60vh] flex-col items-center justify-center px-4 text-center animate-fade-in-up">
-        <div className="rounded-xl border border-zinc-200 bg-white p-10 shadow-sm dark:border-zinc-800 dark:bg-zinc-900/50">
-          <h1 className="text-2xl font-bold text-zinc-950 dark:text-white">Project Not Found</h1>
-          <p className="mt-2 text-sm text-zinc-500 dark:text-zinc-400 font-mono">
-            Error 404: The requested engineering record does not exist.
-          </p>
-          <Link
-            href="/projects"
-            className="mt-6 inline-flex items-center rounded-lg bg-zinc-950 px-5 py-2.5 text-sm font-semibold text-white hover:bg-zinc-800 dark:bg-white dark:text-zinc-950 dark:hover:bg-zinc-100 transition-all"
-          >
-            ← Back to Projects
-          </Link>
-        </div>
+      <div className="mx-auto flex min-h-[60vh] max-w-editorial flex-col items-center justify-center px-5 text-center">
+        <span className="eyebrow text-accent">Error 404</span>
+        <h1 className="mt-4 font-display text-4xl font-light text-ink">Record not found</h1>
+        <p className="mt-2 text-muted">The requested engineering record does not exist.</p>
+        <Link href="/projects" className="mt-6 font-mono text-xs uppercase tracking-[0.16em] text-ink link-underline">
+          ← Back to Projects
+        </Link>
       </div>
     );
   }
 
-  const catStyle = categoryStyles[project.category] || categoryStyles.fullstack;
+  const label = categoryLabel[project.category] || categoryLabel.fullstack;
+  const sections = [
+    { no: '01', label: 'Problem', body: project.problem, accent: false },
+    { no: '02', label: 'Approach', body: project.approach, accent: true },
+    { no: '03', label: 'Outcome', body: project.outcome, accent: false },
+  ];
 
   return (
-    <div className="animate-fade-in-up">
-      {/* Back Link */}
-      <div className="mx-auto max-w-5xl px-4 pt-8 sm:px-6 lg:px-8">
-        <Link
-          href="/projects"
-          className="inline-flex items-center gap-1.5 font-mono text-xs text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100 transition-colors"
-        >
-          <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-            <path strokeLinecap="round" strokeLinejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-          </svg>
-          Back to Projects
+    <div>
+      <div className="mx-auto max-w-editorial px-5 pt-10 sm:px-8">
+        <Link href="/projects" className="font-mono text-[11px] uppercase tracking-[0.16em] text-muted transition-colors hover:text-accent">
+          ← Index
         </Link>
       </div>
 
-      {/* Project Header */}
-      <section className="mx-auto max-w-5xl px-4 py-10 sm:px-6 lg:px-8">
-        {/* Category Badge */}
-        <span className={`inline-flex items-center rounded-md px-2.5 py-1 font-mono text-xs font-semibold ${catStyle.bg} ${catStyle.text}`}>
-          {catStyle.label}
-        </span>
-
-        <h1 className="mt-4 text-3xl font-bold tracking-tight text-zinc-950 dark:text-white sm:text-4xl">
+      {/* Header */}
+      <section className="mx-auto max-w-editorial px-5 py-10 sm:px-8 sm:py-14">
+        <span className="reveal eyebrow text-accent">{label}</span>
+        <h1 className="reveal delay-1 mt-5 max-w-4xl font-display text-4xl font-light leading-[1.06] tracking-[-0.02em] text-ink sm:text-6xl">
           {project.title}
         </h1>
-        <p className="mt-3 text-lg text-zinc-600 dark:text-zinc-400 leading-relaxed">
+        <p className="reveal delay-2 mt-6 max-w-2xl text-xl font-light leading-relaxed text-muted">
           {project.description}
         </p>
 
-        {/* Tags */}
-        <div className="mt-6 flex flex-wrap gap-2" aria-label="Technologies used">
+        <div className="reveal delay-3 mt-8 flex flex-wrap gap-x-5 gap-y-1.5" aria-label="Technologies used">
           {project.tags.map((tag) => (
-            <span
-              key={tag}
-              className="inline-flex items-center rounded-md bg-zinc-100 px-2.5 py-1 font-mono text-xs font-medium text-zinc-800 dark:bg-zinc-800/80 dark:text-zinc-300 border border-zinc-200/50 dark:border-zinc-700/30"
-            >
+            <span key={tag} className="font-mono text-[11px] uppercase tracking-[0.1em] text-faint">
               {tag}
             </span>
           ))}
         </div>
 
-        {/* Action Buttons */}
-        <div className="mt-6 flex flex-wrap gap-3">
-          {project.githubUrl && (
-            <a
-              href={project.githubUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 rounded-lg border border-zinc-200 bg-white px-4 py-2.5 text-sm font-medium text-zinc-700 shadow-sm hover:bg-zinc-50 dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-300 dark:hover:bg-zinc-800 transition-all"
-              aria-label={`View ${project.title} on GitHub`}
-            >
-              <svg className="h-4 w-4 fill-current" viewBox="0 0 24 24" aria-hidden="true">
-                <path fillRule="evenodd" clipRule="evenodd" d="M12 2C6.477 2 2 6.477 2 12c0 4.42 2.865 8.166 6.839 9.489.5.092.682-.217.682-.482 0-.237-.008-.866-.013-1.7-2.782.603-3.369-1.34-3.369-1.34-.454-1.156-1.11-1.462-1.11-1.462-.908-.62.069-.608.069-.608 1.003.07 1.531 1.03 1.531 1.03.892 1.529 2.341 1.087 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.11-4.555-4.943 0-1.091.39-1.984 1.029-2.683-.103-.253-.446-1.27.098-2.647 0 0 .84-.269 2.75 1.025A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.294 2.747-1.025 2.747-1.025.546 1.377.203 2.394.1 2.647.64.699 1.028 1.592 1.028 2.683 0 3.842-2.339 4.687-4.566 4.935.359.309.678.919.678 1.852 0 1.336-.012 2.415-.012 2.743 0 .267.18.579.688.481C19.137 20.162 22 16.418 22 12c0-5.523-4.477-10-10-10z" />
-              </svg>
-              View Source
-            </a>
-          )}
-          {project.liveUrl && (
-            <a
-              href={project.liveUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 rounded-lg bg-emerald-500 px-4 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-emerald-600 transition-all"
-              aria-label={`View live demo of ${project.title}`}
-            >
-              Live Demo
-              <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-              </svg>
-            </a>
-          )}
-        </div>
+        {(project.githubUrl || project.liveUrl) && (
+          <div className="reveal delay-4 mt-8 flex flex-wrap gap-4">
+            {project.githubUrl && (
+              <a href={project.githubUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 border border-rule px-5 py-3 font-mono text-[11px] uppercase tracking-[0.16em] text-ink transition-colors hover:border-accent hover:text-accent">
+                View Source ↗
+              </a>
+            )}
+            {project.liveUrl && (
+              <a href={project.liveUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 bg-ink px-5 py-3 font-mono text-[11px] uppercase tracking-[0.16em] text-paper transition-colors hover:bg-accent">
+                Live Demo ↗
+              </a>
+            )}
+          </div>
+        )}
       </section>
 
-      {/* Problem / Approach / Outcome Detail Grid */}
-      <section className="mx-auto max-w-5xl px-4 pb-12 sm:px-6 lg:px-8">
-        <div className="grid gap-6 md:grid-cols-3">
-          {/* Problem */}
-          <div className="rounded-xl border border-zinc-200 bg-white p-6 dark:border-zinc-800 dark:bg-zinc-900/50">
-            <span className="font-mono text-xs font-semibold uppercase tracking-wider text-zinc-400 dark:text-zinc-500">
-              // PROBLEM
-            </span>
-            <p className="mt-3 text-sm leading-relaxed text-zinc-700 dark:text-zinc-300">
-              {project.problem}
-            </p>
-          </div>
-
-          {/* Approach */}
-          <div className="rounded-xl border border-emerald-200/50 bg-emerald-50/30 p-6 dark:border-emerald-800/30 dark:bg-emerald-950/10">
-            <span className="font-mono text-xs font-semibold uppercase tracking-wider text-emerald-500 dark:text-emerald-400">
-              // APPROACH
-            </span>
-            <p className="mt-3 text-sm leading-relaxed text-zinc-700 dark:text-zinc-300">
-              {project.approach}
-            </p>
-          </div>
-
-          {/* Outcome */}
-          <div className="rounded-xl border border-indigo-200/50 bg-indigo-50/30 p-6 dark:border-indigo-800/30 dark:bg-indigo-950/10">
-            <span className="font-mono text-xs font-semibold uppercase tracking-wider text-indigo-500 dark:text-indigo-400">
-              // OUTCOME
-            </span>
-            <p className="mt-3 text-sm font-medium leading-relaxed text-zinc-800 dark:text-zinc-200">
-              {project.outcome}
-            </p>
-          </div>
-        </div>
-      </section>
-
-      {/* Key Highlights */}
-      {project.highlights && project.highlights.length > 0 && (
-        <section className="mx-auto max-w-5xl px-4 pb-12 sm:px-6 lg:px-8">
-          <h2 className="text-xl font-bold tracking-tight text-zinc-950 dark:text-white mb-6">
-            Key Technical Highlights
-          </h2>
-          <div className="space-y-3">
-            {project.highlights.map((highlight, idx) => (
-              <div
-                key={idx}
-                className="flex items-start gap-3 rounded-lg border border-zinc-100 bg-white p-4 dark:border-zinc-800/60 dark:bg-zinc-900/30"
-              >
-                <div className="mt-0.5 flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-full bg-emerald-500/10 text-emerald-500 dark:bg-emerald-400/10 dark:text-emerald-400">
-                  <svg className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-                  </svg>
-                </div>
-                <p className="text-sm text-zinc-700 dark:text-zinc-300 leading-relaxed">
-                  {highlight}
-                </p>
+      {/* Problem / Approach / Outcome */}
+      <section className="border-t border-rule">
+        <div className="mx-auto max-w-editorial px-5 sm:px-8">
+          {sections.map((s) => (
+            <div key={s.no} className="grid gap-4 border-b border-rule py-10 md:grid-cols-12 md:gap-8 md:py-14">
+              <div className="md:col-span-4">
+                <span className="font-mono text-xs text-accent">{s.no}</span>
+                <h2 className="mt-3 font-display text-2xl font-light tracking-tight text-ink">
+                  {s.label}
+                </h2>
               </div>
-            ))}
+              <p className={`md:col-span-8 text-lg font-light leading-relaxed ${s.accent ? 'text-ink' : 'text-muted'}`}>
+                {s.body}
+              </p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* Highlights */}
+      {project.highlights && project.highlights.length > 0 && (
+        <section className="mx-auto max-w-editorial px-5 py-14 sm:px-8 sm:py-20">
+          <div className="flex items-baseline justify-between border-b border-rule pb-5">
+            <h2 className="font-display text-2xl font-light tracking-tight text-ink">
+              Technical Highlights
+            </h2>
+            <span className="eyebrow text-faint">{`(${project.highlights.length})`}</span>
           </div>
+          <ul>
+            {project.highlights.map((h, idx) => (
+              <li key={idx} className="grid grid-cols-12 gap-4 border-b border-rule py-5">
+                <span className="col-span-2 font-mono text-xs text-accent sm:col-span-1">
+                  {String(idx + 1).padStart(2, '0')}
+                </span>
+                <p className="col-span-10 text-[15px] leading-relaxed text-muted sm:col-span-11">
+                  {h}
+                </p>
+              </li>
+            ))}
+          </ul>
         </section>
       )}
 
-      {/* Project Navigation */}
-      <section className="mx-auto max-w-5xl px-4 pb-16 sm:px-6 lg:px-8">
-        <div className="flex flex-col gap-4 border-t border-zinc-100 pt-8 sm:flex-row sm:justify-between dark:border-zinc-900">
-          {prevProject && (
-            <Link
-              href={`/projects/${prevProject.slug}`}
-              className="group flex items-center gap-3 rounded-lg border border-zinc-200 bg-white px-5 py-4 transition-all hover:-translate-y-0.5 hover:border-zinc-300 hover:shadow-sm dark:border-zinc-800 dark:bg-zinc-900/50 dark:hover:border-zinc-700"
-            >
-              <svg className="h-4 w-4 text-zinc-400 group-hover:text-emerald-500 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-              </svg>
-              <div>
-                <span className="font-mono text-[10px] text-zinc-400 dark:text-zinc-500 uppercase">
-                  Previous
-                </span>
-                <p className="text-sm font-medium text-zinc-700 dark:text-zinc-300 group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors">
-                  {prevProject.title}
-                </p>
-              </div>
-            </Link>
-          )}
-          {nextProject && (
-            <Link
-              href={`/projects/${nextProject.slug}`}
-              className="group flex items-center gap-3 rounded-lg border border-zinc-200 bg-white px-5 py-4 text-right transition-all hover:-translate-y-0.5 hover:border-zinc-300 hover:shadow-sm dark:border-zinc-800 dark:bg-zinc-900/50 dark:hover:border-zinc-700 sm:ml-auto"
-            >
-              <div>
-                <span className="font-mono text-[10px] text-zinc-400 dark:text-zinc-500 uppercase">
-                  Next
-                </span>
-                <p className="text-sm font-medium text-zinc-700 dark:text-zinc-300 group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors">
-                  {nextProject.title}
-                </p>
-              </div>
-              <svg className="h-4 w-4 text-zinc-400 group-hover:text-emerald-500 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />
-              </svg>
-            </Link>
-          )}
+      {/* Prev / Next */}
+      <section className="border-t border-rule">
+        <div className="mx-auto grid max-w-editorial grid-cols-1 sm:grid-cols-2">
+          <Link href={`/projects/${prevProject.slug}`} className="group border-b border-rule px-5 py-8 transition-colors hover:bg-surface sm:border-b-0 sm:border-r sm:px-8">
+            <span className="eyebrow text-faint">← Previous</span>
+            <p className="mt-2 font-display text-xl font-light text-ink transition-colors group-hover:text-accent">
+              {prevProject.title}
+            </p>
+          </Link>
+          <Link href={`/projects/${nextProject.slug}`} className="group px-5 py-8 text-right transition-colors hover:bg-surface sm:px-8">
+            <span className="eyebrow text-faint">Next →</span>
+            <p className="mt-2 font-display text-xl font-light text-ink transition-colors group-hover:text-accent">
+              {nextProject.title}
+            </p>
+          </Link>
         </div>
       </section>
     </div>

@@ -8,69 +8,73 @@ const footerNavLinks = [
 ];
 
 const socialLinks = [
-  {
-    name: 'github',
-    href: 'https://github.com/KumarPriyam123',
-    ariaLabel: 'GitHub Profile',
-  },
-  {
-    name: 'linkedin',
-    href: 'https://www.linkedin.com/in/kumar-priyam-71bbb82a7/',
-    ariaLabel: 'LinkedIn Profile',
-  },
+  { name: 'GitHub', href: 'https://github.com/KumarPriyam123' },
+  { name: 'LinkedIn', href: 'https://www.linkedin.com/in/kumar-priyam-71bbb82a7/' },
+  { name: 'Email', href: 'mailto:kpriyam2005p@gmail.com' },
 ];
 
 export default function Footer() {
   return (
-    <footer
-      className="border-t border-zinc-200 bg-white py-12 dark:border-zinc-900 dark:bg-zinc-950 transition-colors duration-300"
-      role="contentinfo"
-    >
-      <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
-        <div className="flex flex-col items-center justify-between gap-6 sm:flex-row">
-          {/* Copyright / Brand */}
-          <div className="font-mono text-sm font-bold text-zinc-950 dark:text-white">
-            Kumar Priyam{' '}
-            <span className="font-normal text-zinc-400">© 2026</span>
+    <footer className="border-t border-rule bg-paper transition-colors duration-500" role="contentinfo">
+      <div className="mx-auto max-w-editorial px-5 sm:px-8">
+        {/* Big editorial sign-off */}
+        <div className="grid gap-10 py-16 md:grid-cols-12 md:py-20">
+          <div className="md:col-span-7">
+            <p className="eyebrow text-faint">— Colophon</p>
+            <h2 className="mt-5 font-display text-4xl font-light leading-[1.05] tracking-tight text-ink sm:text-5xl">
+              Let&rsquo;s build something
+              <span className="italic text-accent"> worth shipping.</span>
+            </h2>
+            <Link
+              href="/connect"
+              className="mt-7 inline-flex items-baseline gap-2 font-mono text-xs uppercase tracking-[0.18em] text-ink"
+            >
+              <span className="link-underline">Start a conversation</span>
+              <span aria-hidden="true">→</span>
+            </Link>
           </div>
 
-          {/* Navigation Links */}
-          <nav aria-label="Footer Navigation">
-            <div className="flex gap-6 text-sm">
-              {footerNavLinks.map((link) => (
-                <Link
-                  key={link.name}
-                  href={link.href}
-                  className="text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100 transition-colors duration-200"
-                >
-                  {link.name}
-                </Link>
-              ))}
+          <div className="grid grid-cols-2 gap-8 md:col-span-5">
+            <div>
+              <p className="eyebrow text-faint">Index</p>
+              <ul className="mt-4 space-y-2.5">
+                {footerNavLinks.map((link) => (
+                  <li key={link.name}>
+                    <Link
+                      href={link.href}
+                      className="font-serif text-[15px] text-muted transition-colors hover:text-ink"
+                    >
+                      {link.name}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
             </div>
-          </nav>
-
-          {/* Social Links */}
-          <div className="flex gap-4">
-            {socialLinks.map((social) => (
-              <a
-                key={social.name}
-                href={social.href}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-zinc-450 hover:text-zinc-900 dark:text-zinc-500 dark:hover:text-zinc-100 transition-colors duration-200"
-                aria-label={social.ariaLabel}
-              >
-                <span className="font-mono text-xs">
-                  &lt;{social.name}&gt;
-                </span>
-              </a>
-            ))}
+            <div>
+              <p className="eyebrow text-faint">Elsewhere</p>
+              <ul className="mt-4 space-y-2.5">
+                {socialLinks.map((social) => (
+                  <li key={social.name}>
+                    <a
+                      href={social.href}
+                      target={social.href.startsWith('http') ? '_blank' : undefined}
+                      rel={social.href.startsWith('http') ? 'noopener noreferrer' : undefined}
+                      className="font-serif text-[15px] text-muted transition-colors hover:text-ink"
+                    >
+                      {social.name}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
           </div>
         </div>
 
-        {/* Bottom Text */}
-        <div className="mt-8 text-center text-[10px] text-zinc-400 dark:text-zinc-600 font-mono">
-          Designed &amp; built with Next.js &amp; Tailwind CSS.
+        {/* Fine print */}
+        <div className="flex flex-col gap-3 border-t border-rule py-6 font-mono text-[11px] uppercase tracking-[0.14em] text-faint sm:flex-row sm:items-center sm:justify-between">
+          <span>© 2026 Kumar Priyam</span>
+          <span>Set in Fraunces &amp; Newsreader · Built with Next.js</span>
+          <span>New Delhi, India</span>
         </div>
       </div>
     </footer>
