@@ -103,11 +103,10 @@ export default function ConnectPage() {
             <p className="text-sm leading-relaxed text-zinc-600 dark:text-zinc-400">
               I am actively looking for{' '}
               <span className="font-semibold text-zinc-900 dark:text-zinc-100">
-                Data Engineering Internships
-              </span>{' '}
-              or full-stack software development roles. If you want to discuss
-              ETL pipelines, multi-agent systems, or algorithmic optimizations,
-              reach out!
+                AI Engineer, SDE, and Data Engineer roles
+              </span>
+              . If you want to discuss multi-agent systems, full-stack
+              platforms, ETL pipelines, or algorithmic optimizations, reach out!
             </p>
 
             {/* Contact Details */}
@@ -337,7 +336,7 @@ export default function ConnectPage() {
                   rows={5}
                   value={formData.message}
                   onChange={handleInputChange}
-                  placeholder="Hi Kumar, I am interested in discussing a Data Engineering Internship..."
+                  placeholder="Hi Kumar, I'd like to discuss an AI Engineer / SDE / Data Engineer role..."
                   disabled={formStatus === 'submitting'}
                   className="w-full rounded-lg border border-zinc-200 bg-transparent px-4 py-2.5 text-sm text-zinc-900 outline-none transition-all placeholder:text-zinc-400 focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 disabled:opacity-50 dark:border-zinc-800 dark:text-white dark:placeholder:text-zinc-600 resize-y"
                 />

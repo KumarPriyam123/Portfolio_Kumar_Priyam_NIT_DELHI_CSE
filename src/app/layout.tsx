@@ -6,29 +6,30 @@ import './globals.css';
 
 export const metadata: Metadata = {
   title: {
-    default: 'Kumar Priyam | Data Engineering & Full-Stack Developer',
+    default: 'Kumar Priyam | AI Engineer · SDE · Data Engineer',
     template: '%s | Kumar Priyam',
   },
   description:
-    'B.Tech Computer Science student at NIT Delhi (Class of 2027). Building scalable ETL pipelines, multi-tenant data systems, and Agentic AI workflows.',
+    'B.Tech Computer Science student at NIT Delhi (Class of 2027). Building multi-agent AI systems, full-stack platforms, and scalable data pipelines — from RAG architectures to production ETL.',
   keywords: [
     'Kumar Priyam',
     'NIT Delhi',
+    'AI Engineer',
+    'Software Engineer',
     'Data Engineering',
-    'ETL Pipelines',
-    'Apache Airflow',
     'Multi-Agent RL',
-    'RAG-DDR',
-    'Full-Stack Developer',
+    'RAG Pipelines',
+    'LangChain',
     'FastAPI',
-    'PostgreSQL',
-    'MERN Stack',
+    'Next.js',
+    'Full-Stack Developer',
+    'Apache Airflow',
   ],
   authors: [{ name: 'Kumar Priyam' }],
   openGraph: {
-    title: 'Kumar Priyam | Data Engineering & Full-Stack Developer',
+    title: 'Kumar Priyam | AI Engineer · SDE · Data Engineer',
     description:
-      'B.Tech CS @ NIT Delhi. Building scalable ETL pipelines, multi-tenant data systems, and Agentic AI workflows.',
+      'B.Tech CS @ NIT Delhi. Building multi-agent AI systems, full-stack platforms, and scalable data pipelines.',
     type: 'website',
   },
 };

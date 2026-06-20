@@ -138,22 +138,22 @@ export default function Home() {
               <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
               <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-500" />
             </span>
-            <span>Open to Remote Data Engineering Internships</span>
+            <span>Open to AI Engineer · SDE · Data Engineer Roles</span>
           </div>
 
           {/* Heading */}
           <h1 className="mt-8 text-4xl font-extrabold tracking-tight sm:text-5xl md:text-7xl text-zinc-950 dark:text-white">
             Kumar Priyam
             <span className="block mt-3 text-xl sm:text-2xl md:text-3xl font-semibold text-emerald-600 dark:text-emerald-400 font-mono">
-              Data Engineering &amp; Full-Stack Developer
+              AI Engineer · SDE · Data Engineer
             </span>
           </h1>
 
           {/* Subheadline */}
           <p className="mx-auto mt-6 max-w-3xl text-base sm:text-lg text-zinc-600 dark:text-zinc-400 leading-relaxed">
             B.Tech Computer Science student at NIT Delhi (Class of 2027).
-            Building scalable ETL pipelines, multi-tenant data systems, and
-            Agentic AI workflows.
+            Building multi-agent AI systems, full-stack platforms, and scalable
+            data pipelines — from RAG architectures to production ETL.
           </p>
 
           {/* Terminal widget */}

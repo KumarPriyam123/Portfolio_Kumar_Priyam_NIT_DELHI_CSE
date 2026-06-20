@@ -16,7 +16,7 @@ export default function ProfilePage() {
           <path strokeLinecap="round" strokeLinejoin="round" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
         </svg>
       ),
-      items: ['Python', 'SQL', 'C++', 'JavaScript', 'C'],
+      items: ['Python', 'TypeScript', 'SQL', 'C++', 'JavaScript', 'C'],
     },
     {
       category: 'Data Engineering',
@@ -41,6 +41,8 @@ export default function ProfilePage() {
         </svg>
       ),
       items: [
+        'Next.js',
+        'React.js',
         'FastAPI',
         'Node.js',
         'LangChain',
@@ -74,6 +76,9 @@ export default function ProfilePage() {
         </svg>
       ),
       items: [
+        'PyTorch',
+        'LoRA',
+        'GRPO',
         'NumPy',
         'Pandas',
         'Scikit-learn',
@@ -168,19 +173,22 @@ export default function ProfilePage() {
               </h2>
               <div className="space-y-4 text-base leading-relaxed text-zinc-600 dark:text-zinc-400">
                 <p>
-                  I am a Data Engineering student at{' '}
+                  I am a Computer Science student at{' '}
                   <span className="font-semibold text-zinc-900 dark:text-zinc-100">
                     NIT Delhi
                   </span>{' '}
-                  (Class of 2027) with hands-on experience building ETL
-                  pipelines, multi-tenant data systems, and RAG-based retrieval
-                  architectures.
+                  (Class of 2027) working across{' '}
+                  <span className="font-semibold text-zinc-900 dark:text-zinc-100">
+                    AI engineering, software development, and data engineering
+                  </span>{' '}
+                  — from multi-agent RL and RAG architectures to full-stack
+                  platforms and multi-tenant ETL pipelines.
                 </p>
                 <p>
-                  My focus lies in contributing to production-grade data
-                  infrastructure, ensuring pipeline reliability, and solving
-                  complex architectural challenges like context overloading in AI
-                  systems.
+                  I build production-grade systems end to end: training
+                  role-specific LoRA adapters and orchestration policies on one
+                  side, shipping FastAPI + Next.js products and reliable data
+                  infrastructure on the other.
                 </p>
                 <p>
                   I actively participate in competitive programming to
@@ -296,7 +304,7 @@ export default function ProfilePage() {
                   {'// env.nit_delhi_cse_2027'}
                 </p>
                 <p>Status: ready_to_contribute</p>
-                <p>Focus: Distributed systems &amp; pipelines</p>
+                <p>Focus: AI systems, full-stack &amp; data pipelines</p>
               </div>
             </div>
           </div>
