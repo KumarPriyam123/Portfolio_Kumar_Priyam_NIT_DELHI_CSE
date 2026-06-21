@@ -35,19 +35,44 @@
   body {
     font-family: 'Newsreader', ui-serif, Georgia, serif;
     font-optical-sizing: auto;
-    font-size: 1.0625rem;
-    line-height: 1.65;
+    font-size: 1.0625rem; /* 17px */
+    line-height: 1.7;
+    letter-spacing: 0.003em;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-rendering: optimizeLegibility;
+  }
+  /* Headline defaults — utilities still override these */
+  h1,
+  h2,
+  h3,
+  h4 {
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    text-wrap: balance;
+  }
+  p {
+    text-wrap: pretty;
+  }
+  /* Offset anchored scrolling for the sticky nav */
+  section[id],
+  [id] {
+    scroll-margin-top: 5rem;
   }
   ::selection {
     background-color: rgb(var(--accent) / 0.22);
     color: rgb(var(--ink));
   }
+  /* Keyboard focus — accent ring, never on mouse click */
+  :focus-visible {
+    outline: 2px solid rgb(var(--accent));
+    outline-offset: 3px;
+    border-radius: 1px;
+  }
   /* Fraunces display tuning */
   .font-display {
     font-feature-settings: 'ss01', 'liga', 'dlig';
+    font-optical-sizing: auto;
   }
 }
 

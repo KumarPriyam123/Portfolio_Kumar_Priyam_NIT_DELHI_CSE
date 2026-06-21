@@ -71,7 +71,7 @@ export default function Home() {
         <div className="grid gap-10 pt-10 md:grid-cols-12 md:gap-8 md:pt-14">
           {/* Headline */}
           <div className="md:col-span-8">
-            <h1 className="font-display text-[2.6rem] font-light leading-[1.04] tracking-[-0.02em] text-ink sm:text-6xl md:text-[4.6rem]">
+            <h1 className="font-display font-light leading-[1.02] tracking-[-0.025em] text-ink text-[clamp(2.5rem,7vw,5rem)]">
               <span className="reveal delay-1 block">I build</span>
               <span className="reveal delay-2 block italic text-accent">
                 multi-agent AI,
