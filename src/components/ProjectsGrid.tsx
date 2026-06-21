@@ -6,15 +6,15 @@ import type { Project } from '@/data/projects';
 
 const categories = [
   { label: 'All', value: 'all' as const },
-  { label: 'Data Engineering', value: 'data-engineering' as const },
+  { label: 'Full-Stack + AI', value: 'fullstack' as const },
   { label: 'AI Research', value: 'ai-research' as const },
-  { label: 'Full-Stack', value: 'fullstack' as const },
+  { label: 'Data Engineering', value: 'data-engineering' as const },
 ];
 
 const categoryLabel: Record<string, string> = {
   'data-engineering': 'Data Engineering',
   'ai-research': 'AI Research',
-  fullstack: 'Full-Stack',
+  fullstack: 'Full-Stack + AI',
 };
 
 function ProjectCard({ project, index }: { project: Project; index: number }) {

@@ -4,11 +4,11 @@ import React, { useEffect } from 'react';
 
 const skills = [
   { category: 'Languages', items: ['Python', 'TypeScript', 'SQL', 'C++', 'JavaScript', 'C'] },
-  { category: 'AI & ML', items: ['PyTorch', 'LoRA', 'GRPO', 'NumPy', 'Pandas', 'Scikit-learn', 'OpenAI API', 'Google Gemini API'] },
+  { category: 'AI & ML', items: ['PyTorch', 'LoRA', 'GRPO', 'Vector Embeddings', 'Semantic Search', 'NumPy', 'Pandas', 'Scikit-learn', 'OpenAI API', 'Google Gemini API'] },
   { category: 'Frameworks & APIs', items: ['Next.js', 'React.js', 'FastAPI', 'Node.js', 'LangChain', 'RAG Pipelines', 'Multi-Agent LLM Orchestration'] },
-  { category: 'Data Engineering', items: ['Apache Airflow', 'ETL/ELT Pipelines', 'Data Partitioning', 'Schema Validation', 'Data Quality Checks'] },
-  { category: 'Databases', items: ['PostgreSQL', 'MongoDB', 'Redis', 'Pinecone (Vector DB)', 'pgvector', 'Supabase'] },
-  { category: 'Infrastructure', items: ['Docker', 'Linux', 'Git', 'GitHub', 'Cloudflare Tunnel', 'Vercel', 'Postman', 'VS Code'] },
+  { category: 'Data Engineering', items: ['Apache Airflow', 'n8n Automation', 'ETL/ELT Pipelines', 'Data Partitioning', 'Schema Validation', 'Data Quality Checks'] },
+  { category: 'Databases', items: ['PostgreSQL', 'MongoDB', 'Redis', 'Pinecone (Vector DB)', 'pgvector', 'Supabase', 'Row-Level Security'] },
+  { category: 'Infrastructure', items: ['Docker', 'Linux', 'Git', 'GitHub', 'Cloudflare Tunnel', 'DigitalOcean', 'Vercel', 'Postman', 'VS Code'] },
 ];
 
 const achievements = [

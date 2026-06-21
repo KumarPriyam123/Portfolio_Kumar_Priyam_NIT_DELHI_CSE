@@ -8,7 +8,7 @@ import { projects, getProjectBySlug } from '@/data/projects';
 const categoryLabel: Record<string, string> = {
   'data-engineering': 'Data Engineering',
   'ai-research': 'AI Research',
-  fullstack: 'Full-Stack',
+  fullstack: 'Full-Stack + AI',
 };
 
 export default function ProjectDetailPage() {
