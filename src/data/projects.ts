@@ -10,6 +10,7 @@ export interface Project {
   githubUrl?: string;
   liveUrl?: string;
   highlights?: string[];
+  metrics?: { value: string; label: string }[];
 }
 
 export const projects: Project[] = [
@@ -36,6 +37,11 @@ export const projects: Project[] = [
       'Shipped a live multi-user product self-hosted on a DigitalOcean droplet behind a Cloudflare Tunnel (zero open inbound ports) with the Next.js frontend on Vercel. First live ingestion pulled 72 real jobs into the shared pool; matching, auth isolation, dedup, ingestion, and the opt-in nightly email digest were each verified end to end.',
     githubUrl: 'https://github.com/KumarPriyam123/JobAutomation',
     liveUrl: 'https://jobmatch.kpriyam.me/login',
+    metrics: [
+      { value: '768-d', label: 'vector match' },
+      { value: '0', label: 'inbound ports' },
+      { value: 'Live', label: 'multi-tenant' },
+    ],
     highlights: [
       'Semantic matching over keyword search — Gemini 768-d L2-normalized embeddings (RETRIEVAL_QUERY for résumés, RETRIEVAL_DOCUMENT for jobs) ranked by pgvector ivfflat cosine index',
       'Database-enforced multi-tenancy via Postgres Row-Level Security — per-request transaction sets request.jwt.claims and SET LOCAL role authenticated so auth.uid() resolves inside the DB',
@@ -60,6 +66,10 @@ export const projects: Project[] = [
     outcome:
       'Slashed the over-search rate by 91% (dropping from 27% to 2.3%), eliminating unnecessary retrieval rounds. Improved exact match and F1 scores significantly while achieving a 42% faster average inference time.',
     githubUrl: 'https://github.com/KumarPriyam123',
+    metrics: [
+      { value: '91%', label: 'less over-search' },
+      { value: '42%', label: 'faster inference' },
+    ],
     highlights: [
       'Formalized RAG as Dec-POMDP — each module (query rewriter, retriever, selector, generator) acts as an autonomous agent under partial observability',
       'Shared Global Working Memory (SGWM) provides centralized state representation preventing redundant information gathering and context drift',
@@ -92,6 +102,11 @@ export const projects: Project[] = [
     outcome:
       'Delivered bidirectional code synchronization with <70ms latency and a multi-language code execution engine boasting a 1.4s average response time. Reduced overall API latency by 46% (890ms to 420ms) and improved candidate answer quality by 12.3% during pilot evaluations.',
     githubUrl: 'https://github.com/KumarPriyam123/Interview-Platforms_Users',
+    metrics: [
+      { value: '<70ms', label: 'code sync' },
+      { value: '46%', label: 'lower API latency' },
+      { value: '+12.3%', label: 'answer quality' },
+    ],
     highlights: [
       'Multi-agent MockLLM framework dynamically adjusts questioning difficulty based on real-time candidate performance analysis',
       'WebRTC + Socket.io integration delivers bidirectional code synchronization with <70ms latency',
@@ -122,6 +137,11 @@ export const projects: Project[] = [
     outcome:
       'Successfully processed over 100K records per day while cutting new-tenant onboarding time to under 5 minutes. Reduced mean pipeline resolution time from roughly 30 minutes to under 10 minutes with an 85%+ accuracy rate in failure classification.',
     githubUrl: 'https://github.com/KumarPriyam123',
+    metrics: [
+      { value: '100K+', label: 'records / day' },
+      { value: '<5 min', label: 'tenant onboarding' },
+      { value: '85%+', label: 'fault accuracy' },
+    ],
     highlights: [
       'JSON-driven DAG configurations enable strict tenant-level isolation without code changes',
       'Groq API integration automatically parses system logs and classifies pipeline failures',
@@ -146,6 +166,10 @@ export const projects: Project[] = [
     outcome:
       'Achieved consistent retrieval latency and relevance scores under high concurrent load in a production-like environment.',
     githubUrl: 'https://github.com/KumarPriyam123',
+    metrics: [
+      { value: 'Async', label: 'concurrent retrieval' },
+      { value: 'Docker', label: 'instant deploy' },
+    ],
     highlights: [
       'FastAPI async endpoints handle concurrent ingestion and retrieval without blocking',
       'Intelligent document chunking with overlap for context preservation',

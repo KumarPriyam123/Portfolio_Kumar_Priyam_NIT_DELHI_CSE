@@ -2,7 +2,7 @@
 
 import React, { useEffect } from 'react';
 import { projects } from '@/data/projects';
-import ProjectsExplorer from '@/components/ProjectsExplorer';
+import ProjectsGrid from '@/components/ProjectsGrid';
 
 export default function ProjectsPage() {
   useEffect(() => {
@@ -22,15 +22,15 @@ export default function ProjectsPage() {
             Projects
           </h1>
           <p className="reveal delay-2 mt-5 max-w-xl text-[1.05rem] leading-relaxed text-muted">
-            Pick a project to read its problem, approach, and measured outcome —
-            details open in place, no endless scrolling.
+            Scan every project&apos;s stack and measured impact at a glance —
+            open any card for the full case study.
           </p>
         </div>
       </section>
 
       {/* Master-detail explorer */}
       <section className="mx-auto max-w-editorial px-5 py-12 sm:px-8 sm:py-16">
-        <ProjectsExplorer projects={projects} />
+        <ProjectsGrid projects={projects} />
       </section>
     </div>
   );
