@@ -28,7 +28,7 @@ export default function ProjectsPage() {
         </div>
       </section>
 
-      {/* Master-detail explorer */}
+      {/* Project card grid */}
       <section className="mx-auto max-w-editorial px-5 py-12 sm:px-8 sm:py-16">
         <ProjectsGrid projects={projects} />
       </section>
