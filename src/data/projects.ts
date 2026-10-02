@@ -53,6 +53,49 @@ export const projects: Project[] = [
     ],
   },
   {
+    slug: 'clinicq',
+    title: 'ClinicQ: WhatsApp Virtual Queue for Clinics',
+    description:
+      'WhatsApp-native token queue for single-doctor Indian clinics: patients book, track live ETA, and check in with no app, while reception runs the queue from a one-thumb PWA.',
+    tags: [
+      'WhatsApp Cloud API',
+      'FastAPI',
+      'Next.js 14 PWA',
+      'PostgreSQL/Supabase',
+      'APScheduler',
+      'Gemini / Claude Haiku',
+      'Docker',
+      'Cloudflare Tunnel',
+    ],
+    category: 'fullstack',
+    problem:
+      'Small Indian clinics run on paper tokens and verbal estimates: patients wait blind for hours, absentees stall the doctor while present patients sit idle, and after-hours enquiries are simply lost. Patients will not install an app, and receptionists working on cheap Android phones, interrupted constantly, need something that works with one thumb.',
+    approach:
+      'Met patients where they already are: the entire booking, live position/ETA, check-in and cancel journey runs on WhatsApp buttons and lists, with an LLM parsing only free-text Hinglish/Devanagari into a strict intent schema. Underneath sits a pure, side-effect-free queue engine built on three rules: sort by a clamped priority_time rather than booking order, compute ETAs by a forward walk from the doctor\'s live clock, and at call time serve the first patient who has actually arrived. The clinic drives everything from a bilingual, mobile-first PWA with one big NEXT button and a 5-second undo on every action.',
+    outcome:
+      'Built in phased, test-gated milestones (schema → engine → WhatsApp layer → conversation/LLM → scheduler jobs → panel) and deployed: FastAPI in Docker on a DigitalOcean droplet behind a Cloudflare Tunnel, Postgres on Supabase, and the panel on Vercel. Verified with a full live WhatsApp round-trip and a session simulator, backed by 160+ backend tests that run against a real Postgres (pg-skipped tests are a hard failure, not a green bar). Pilot-ready, with no-show, after-hours-capture and wait-time metrics queryable straight from the append-only event log.',
+    githubUrl: 'https://github.com/KumarPriyam123/Clinic-Automation',
+    liveUrl: 'https://clinic-automation-ten.vercel.app',
+    metrics: [
+      { value: '0', label: 'apps to install' },
+      { value: 'hi/en', label: 'bilingual' },
+      { value: '160+', label: 'tests' },
+    ],
+    highlights: [
+      'Pure queue engine (no WhatsApp/LLM/web imports, enforced by a test) that returns notifications as data — a single dispatcher is the only bridge to WhatsApp',
+      'Priority-time ordering clamped to max(now, session start) so nobody can claim a past slot to leapfrog the waiting room or book into a session that is closed',
+      'ETA as a forward walk from the doctor\'s live clock; patients are pinged only when their ETA shifts by more than 10 minutes, keeping messaging calm',
+      '"Present beats absent": NEXT serves the first ARRIVED patient, absentees are skipped instantly with a grace window — and held, not skipped, when nobody has arrived',
+      'Self-learning consult time via an EMA (0.7/0.3) bounded to 30s–45min, after a forgotten NEXT tap once produced a 26-hour "consult" that poisoned every ETA',
+      'Gap pull-forward when a cancellation frees the doctor: auto-call an arrived patient, otherwise offer the slot to remote patients within a 30-minute horizon with a 5-minute expiry',
+      'LLM confined to intent parsing (Gemini Flash or Claude Haiku, temperature 0, strict JSON): it never mutates state, re-asks with buttons below 0.7 confidence, and routes medical questions to a fixed safe reply',
+      'WhatsApp layer with a single send() gateway, 24-hour-window template fallback, wamid-deduped webhooks, idempotent per-entry notification stamps, and a DPDP-compliant STOP/delete flow',
+      'Concurrency-safe Postgres with no ORM and no Redis: SELECT … FOR UPDATE session locks, race-safe token numbers, and an append-only events table behind every state change',
+      'Receptionist PWA in Hindi-first, bilingual copy with 56px touch targets, a fixed 72px NEXT button, 4s polling with optimistic updates, offline read-only cache and JWT slug + PIN auth',
+      'Production hardening: strict panel CORS allow-list, bearer-guarded /metrics that fails closed, single-instance scheduler guard to prevent duplicate patient sends',
+    ],
+  },
+  {
     slug: 'marl-maps',
     title: 'MARL-MAPS: Dynamic Multi-Agent RL for Optimized RAG',
     description:
