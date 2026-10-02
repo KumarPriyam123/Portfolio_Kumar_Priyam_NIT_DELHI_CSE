@@ -12,19 +12,11 @@ interface ThemeContextType {
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
-  const [theme, setTheme] = useState<Theme>('light'); // Editorial is light-primary; dark is the warm-ink variant
+  const [theme, setTheme] = useState<Theme>('dark'); // Dark (warm-ink) by default; a saved choice wins
 
   useEffect(() => {
     const savedTheme = localStorage.getItem('theme') as Theme | null;
-    const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-    
-    if (savedTheme) {
-      setTheme(savedTheme);
-    } else if (systemPrefersDark) {
-      setTheme('dark');
-    } else {
-      setTheme('light');
-    }
+    if (savedTheme === 'light' || savedTheme === 'dark') setTheme(savedTheme);
   }, []);
 
   useEffect(() => {
@@ -36,11 +28,15 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
       root.classList.remove('dark');
       root.style.colorScheme = 'light';
     }
-    localStorage.setItem('theme', theme);
   }, [theme]);
 
+  // Persist only explicit choices, so untouched visitors keep following the default
   const toggleTheme = () => {
-    setTheme((prev) => (prev === 'dark' ? 'light' : 'dark'));
+    setTheme((prev) => {
+      const next = prev === 'dark' ? 'light' : 'dark';
+      localStorage.setItem('theme', next);
+      return next;
+    });
   };
 
   return (
