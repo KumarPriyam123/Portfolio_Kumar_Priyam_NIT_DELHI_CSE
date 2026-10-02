@@ -43,7 +43,7 @@ No API calls, no CMS, no database. Pages import from `src/data/` directly.
 
 ### Theme system
 
-`ThemeContext.tsx` manages dark/light mode. On mount it reads `localStorage` (key `"theme"`), falls back to `prefers-color-scheme`. It applies `dark` class to `<html>` and sets `colorScheme`. Default is `'light'` (the editorial design is light-primary; dark is a warm-ink variant). The `<html>` tag has `suppressHydrationWarning` to avoid SSR/client mismatch on the class.
+`ThemeContext.tsx` manages dark/light mode. Default is `'dark'` (warm-ink variant); `<html>` is server-rendered with the `dark` class so there is no light flash. On mount it reads `localStorage` (key `"theme"`) and a saved choice wins; `prefers-color-scheme` is ignored. Only an explicit toggle is persisted. The `<html>` tag has `suppressHydrationWarning` to avoid SSR/client mismatch on the class.
 
 All pages use `'use client'` except `research/page.tsx` (server component with exported `metadata`) — most pages are client components.
 
