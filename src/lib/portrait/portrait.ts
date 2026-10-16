@@ -93,22 +93,6 @@ function detail(g: Grid, radius: number, k: number): Float32Array {
   return out;
 }
 
-function edges(g: Grid): Float32Array {
-  const { cols, rows, lum } = g;
-  const e = new Float32Array(cols * rows);
-  let max = 0;
-  for (let y = 1; y < rows - 1; y++)
-    for (let x = 1; x < cols - 1; x++) {
-      const i = y * cols + x;
-      const gx = lum[i - cols + 1] + 2 * lum[i + 1] + lum[i + cols + 1] - lum[i - cols - 1] - 2 * lum[i - 1] - lum[i + cols - 1];
-      const gy = lum[i + cols - 1] + 2 * lum[i + cols] + lum[i + cols + 1] - lum[i - cols - 1] - 2 * lum[i - cols] - lum[i - cols + 1];
-      e[i] = Math.hypot(gx, gy);
-      if (e[i] > max) max = e[i];
-    }
-  for (let i = 0; i < e.length; i++) e[i] = Math.min(1, e[i] / (max * 0.55 || 1));
-  return e;
-}
-
 function canvas(w: number, h: number, dpr: number) {
   const c = document.createElement('canvas');
   c.width = Math.max(1, Math.round(w * dpr));
@@ -228,126 +212,128 @@ class CodeLayer implements Layer {
 }
 
 /* ------------------------------------------------------------------- AI --- */
+// A dense, slightly jittered hex mesh of neurons. Each neuron's size and
+// brightness follow the face (like a halftone), so the face reads at a glance;
+// lit neighbours are wired together, and activations walk those wires.
 class GraphLayer implements Layer {
   private base: HTMLCanvasElement;
-  private nodes: { x: number; y: number; w: number; s: number }[] = [];
+  private nodes: { x: number; y: number; v: number; s: number }[] = [];
   private links: [number, number][] = [];
   private adj: number[][] = [];
-  private pulses: { e: number; dir: 1 | -1; t: number; v: number }[] = [];
+  private pulses: { e: number; dir: 1 | -1; t: number; v: number; trail: [number, number][] }[] = [];
+  private sp: number;
   private r = rng(29);
-  private tw: { i: number; until: number }[] = [];
   constructor(private k: Ctx) {
     const { box, mobile } = k;
-    const cols = 120;
-    const rows = Math.round(cols * (box.h / box.w));
+    const sp = (this.sp = clamp(box.h / (mobile ? 66 : 88), 4.5, 8.5));
+    const rh = sp * 0.866;
+    const cols = Math.floor(box.w / sp);
+    const rows = Math.floor(box.h / rh);
     const g = sample(k.img, cols, rows);
-    const e = edges(g);
-    const L = detail(g, 5, 1.2);
-    const weights = new Float32Array(cols * rows);
-    let sum = 0;
-    // Light on dark: nodes gather where the face catches light, and on its contours.
-    for (let i = 0; i < weights.length; i++) {
-      weights[i] = g.a[i] > 0.5 ? 0.015 + 1.8 * Math.pow(L[i], 2.2) + 1.25 * e[i] : 0;
-      sum += weights[i];
-    }
-    const N = mobile ? 600 : 1150;
-    const cdf = new Float32Array(weights.length);
-    let acc = 0;
-    for (let i = 0; i < weights.length; i++) cdf[i] = acc += weights[i] / sum;
-    for (let n = 0; n < N; n++) {
-      const u = this.r();
-      let lo = 0;
-      let hi = cdf.length - 1;
-      while (lo < hi) {
-        const m = (lo + hi) >> 1;
-        if (cdf[m] < u) lo = m + 1;
-        else hi = m;
+    const L = detail(g, Math.max(2, Math.round(cols / 16)), 0.95);
+    const id = new Int32Array(cols * rows).fill(-1);
+    for (let row = 0; row < rows; row++)
+      for (let col = 0; col < cols; col++) {
+        const i = row * cols + col;
+        if (g.a[i] < 0.45) continue;
+        const l = L[i];
+        if (l < 0.12) continue;
+        const v = Math.pow((l - 0.12) / 0.88, 1.2);
+        id[i] = this.nodes.length;
+        this.nodes.push({
+          x: box.x + (col + 0.5 + (row % 2) * 0.5) * sp + (this.r() - 0.5) * sp * 0.34,
+          y: box.y + (row + 0.5) * rh + (this.r() - 0.5) * sp * 0.34,
+          v,
+          s: this.r(),
+        });
       }
-      const cx = lo % cols;
-      const cy = (lo / cols) | 0;
-      this.nodes.push({ x: box.x + ((cx + this.r()) / cols) * box.w, y: box.y + ((cy + this.r()) / rows) * box.h, w: Math.min(1, Math.pow(L[lo], 1.5) * 0.9 + e[lo] * 0.35), s: this.r() });
-    }
-    // k nearest neighbours through a spatial hash.
-    const maxLen = box.w * (mobile ? 0.085 : 0.06);
-    const hash = new Map<string, number[]>();
-    const key = (x: number, y: number) => `${Math.floor(x / maxLen)},${Math.floor(y / maxLen)}`;
-    this.nodes.forEach((p, i) => {
-      const kk = key(p.x, p.y);
-      (hash.get(kk) ?? hash.set(kk, []).get(kk)!).push(i);
-    });
-    const seen = new Set<string>();
+    // Wire lit neighbours on the hex lattice (E, SE, SW).
     this.adj = this.nodes.map(() => []);
-    this.nodes.forEach((p, i) => {
-      const gx = Math.floor(p.x / maxLen);
-      const gy = Math.floor(p.y / maxLen);
-      const near: [number, number][] = [];
-      for (let dx = -1; dx <= 1; dx++)
-        for (let dy = -1; dy <= 1; dy++)
-          for (const j of hash.get(`${gx + dx},${gy + dy}`) ?? []) {
-            if (j === i) continue;
-            const d = Math.hypot(this.nodes[j].x - p.x, this.nodes[j].y - p.y);
-            if (d < maxLen) near.push([d, j]);
-          }
-      near.sort((a, b) => a[0] - b[0]);
-      for (const [, j] of near.slice(0, 3)) {
-        const id = i < j ? `${i}-${j}` : `${j}-${i}`;
-        if (seen.has(id)) continue;
-        seen.add(id);
-        this.adj[i].push(this.links.length);
-        this.adj[j].push(this.links.length);
-        this.links.push([i, j]);
+    for (let row = 0; row < rows; row++)
+      for (let col = 0; col < cols; col++) {
+        const a = id[row * cols + col];
+        if (a < 0 || this.nodes[a].v < 0.3) continue;
+        const odd = row % 2;
+        const nb = [
+          [col + 1, row],
+          [col + odd, row + 1],
+          [col - 1 + odd, row + 1],
+        ];
+        for (const [c2, r2] of nb) {
+          if (c2 < 0 || c2 >= cols || r2 >= rows) continue;
+          const b = id[r2 * cols + c2];
+          if (b < 0 || this.nodes[b].v < 0.3) continue;
+          // Not every wire: a sparse mesh reads as a network, a full one as a grid.
+          if (this.r() > 0.55 + 0.35 * Math.min(this.nodes[a].v, this.nodes[b].v)) continue;
+          this.adj[a].push(this.links.length);
+          this.adj[b].push(this.links.length);
+          this.links.push([a, b]);
+        }
       }
-    });
     const { c, x } = canvas(k.W, k.H, k.dpr);
     x.drawImage(k.silhouette, 0, 0, k.W, k.H);
-    this.paint(x, 1);
+    this.paint(x);
     this.base = c;
-    for (let i = 0; i < (mobile ? 36 : 70); i++) this.pulses.push(this.newPulse());
+    for (let i = 0; i < (mobile ? 60 : 120); i++) this.pulses.push(this.newPulse());
   }
   private newPulse() {
-    return { e: (this.r() * this.links.length) | 0, dir: (this.r() < 0.5 ? 1 : -1) as 1 | -1, t: this.r(), v: 0.9 + this.r() * 1.6 };
-  }
-  private paint(x: CanvasRenderingContext2D, k: number, local = 99999) {
-    const c = COLOR.ai;
-    x.lineWidth = 0.8;
-    x.strokeStyle = rgba(c, 0.17 * k);
-    x.beginPath();
-    for (const [i, j] of this.links) {
-      const a = this.nodes[i];
-      const b = this.nodes[j];
-      if (local < 99999 && (a.s * 700 > local || b.s * 700 > local)) continue;
-      x.moveTo(a.x, a.y);
-      x.lineTo(b.x, b.y);
+    // Start on bright wires so activations light the face, not the edges.
+    let e = (this.r() * this.links.length) | 0;
+    for (let tries = 0; tries < 6; tries++) {
+      const [a, b] = this.links[e] ?? [0, 0];
+      if (Math.min(this.nodes[a]?.v ?? 0, this.nodes[b]?.v ?? 0) > 0.55) break;
+      e = (this.r() * this.links.length) | 0;
     }
-    x.stroke();
-    for (const n of this.nodes) {
-      const g = local < 99999 ? ease((local - n.s * 700) / 300) : 1;
-      if (g <= 0) continue;
-      x.fillStyle = rgba(mix(c, WHITE, n.w * n.w * 0.6), (0.25 + 0.75 * n.w) * g);
+    return { e, dir: (this.r() < 0.5 ? 1 : -1) as 1 | -1, t: 0, v: 0.18 + this.r() * 0.16, trail: [] as [number, number][] };
+  }
+  private paint(x: CanvasRenderingContext2D, local = Infinity) {
+    const c = COLOR.ai;
+    const T = 1000;
+    x.lineWidth = Math.max(0.6, this.sp * 0.1);
+    x.lineCap = 'round';
+    for (let band = 0; band < 3; band++) {
+      x.strokeStyle = rgba(c, 0.1 + band * 0.1);
       x.beginPath();
-      x.arc(n.x, n.y, (0.5 + 2.1 * n.w) * g, 0, Math.PI * 2);
+      for (const [i, j] of this.links) {
+        const a = this.nodes[i];
+        const b = this.nodes[j];
+        const m = Math.min(a.v, b.v);
+        if (Math.min(2, Math.floor(m * 3)) !== band) continue;
+        if (local < Infinity && (a.s * T > local || b.s * T > local)) continue;
+        x.moveTo(a.x, a.y);
+        x.lineTo(b.x, b.y);
+      }
+      x.stroke();
+    }
+    const R = this.sp * 0.44;
+    for (const n of this.nodes) {
+      const g = local < Infinity ? ease((local - n.s * T) / 260) : 1;
+      if (g <= 0) continue;
+      x.fillStyle = rgba(mix(c, WHITE, n.v * n.v * 0.75), (0.2 + 0.8 * n.v) * g);
+      x.beginPath();
+      x.arc(n.x, n.y, Math.max(0.45, R * (0.18 + 0.82 * n.v)) * g, 0, Math.PI * 2);
       x.fill();
     }
   }
   draw(x: CanvasRenderingContext2D, local: number, p: Pointer) {
     const { W, H, reduce } = this.k;
-    if (!reduce && local < 1100) {
+    if (!reduce && local < 1300) {
       x.drawImage(this.k.silhouette, 0, 0, W, H);
-      this.paint(x, ease(local / 1100), local);
+      this.paint(x, local);
       return;
     }
     x.drawImage(this.base, 0, 0, W, H);
-    if (reduce) return;
-    const now = performance.now();
-    // Activations walk the graph.
+    if (reduce || !this.links.length) return;
+    // Activations walk the mesh, leaving a short glowing trail.
+    x.lineCap = 'round';
     for (const q of this.pulses) {
-      q.t += 0.016 * q.v;
+      q.t += q.v;
       if (q.t >= 1) {
         const [i, j] = this.links[q.e];
         const end = q.dir === 1 ? j : i;
-        const opts = this.adj[end];
+        const opts = this.adj[end].filter((e) => e !== q.e);
         const ne = opts[(this.r() * opts.length) | 0];
-        if (ne === undefined || this.r() < 0.04) Object.assign(q, this.newPulse(), { t: 0 });
+        if (ne === undefined || this.r() < 0.012) Object.assign(q, this.newPulse());
         else {
           q.e = ne;
           q.dir = this.links[ne][0] === end ? 1 : -1;
@@ -359,46 +345,39 @@ class GraphLayer implements Layer {
       const b = this.nodes[q.dir === 1 ? j : i];
       const px = a.x + (b.x - a.x) * q.t;
       const py = a.y + (b.y - a.y) * q.t;
-      x.strokeStyle = rgba(WHITE, 0.55);
-      x.lineWidth = 1.2;
+      q.trail.push([px, py]);
+      if (q.trail.length > 9) q.trail.shift();
+      if (q.trail.length > 1) {
+        x.strokeStyle = rgba(mix(COLOR.ai, WHITE, 0.4), 0.75);
+        x.lineWidth = Math.max(1, this.sp * 0.22);
+        x.beginPath();
+        q.trail.forEach(([tx, ty], k) => (k ? x.lineTo(tx, ty) : x.moveTo(tx, ty)));
+        x.stroke();
+      }
+      x.fillStyle = rgba(WHITE, 0.95);
       x.beginPath();
-      x.moveTo(a.x + (b.x - a.x) * Math.max(0, q.t - 0.35), a.y + (b.y - a.y) * Math.max(0, q.t - 0.35));
-      x.lineTo(px, py);
-      x.stroke();
-      x.fillStyle = rgba(mix(COLOR.ai, WHITE, 0.6), 0.95);
-      x.beginPath();
-      x.arc(px, py, 1.7, 0, Math.PI * 2);
-      x.fill();
-    }
-    if (this.r() < 0.35) this.tw.push({ i: (this.r() * this.nodes.length) | 0, until: now + 500 });
-    this.tw = this.tw.filter((t) => t.until > now);
-    for (const t of this.tw) {
-      const n = this.nodes[t.i];
-      const k = (t.until - now) / 500;
-      x.fillStyle = rgba(WHITE, 0.8 * k);
-      x.beginPath();
-      x.arc(n.x, n.y, 1.5 + 2.2 * k, 0, Math.PI * 2);
+      x.arc(px, py, Math.max(1.2, this.sp * 0.26), 0, Math.PI * 2);
       x.fill();
     }
     if (p) {
-      // Attention: the pointer attends to its nearest nodes.
+      // Attention: the pointer attends to the brightest neurons near it.
       const near = this.nodes
         .map((n, i) => [Math.hypot(n.x - p.x, n.y - p.y), i] as [number, number])
-        .filter((d) => d[0] < 150)
+        .filter((d) => d[0] < 120 && this.nodes[d[1]].v > 0.45)
         .sort((a, b) => a[0] - b[0])
-        .slice(0, 7);
+        .slice(0, 9);
+      x.lineWidth = 1;
       for (const [d, i] of near) {
         const n = this.nodes[i];
-        const k = 1 - d / 150;
-        x.strokeStyle = rgba(COLOR.ai, 0.25 + 0.55 * k);
-        x.lineWidth = 1;
+        const k = 1 - d / 120;
+        x.strokeStyle = rgba(COLOR.ai, 0.2 + 0.6 * k);
         x.beginPath();
         x.moveTo(p.x, p.y);
         x.lineTo(n.x, n.y);
         x.stroke();
         x.fillStyle = rgba(WHITE, 0.5 + 0.5 * k);
         x.beginPath();
-        x.arc(n.x, n.y, 2 + 2 * k, 0, Math.PI * 2);
+        x.arc(n.x, n.y, this.sp * 0.3 + 1.5 * k, 0, Math.PI * 2);
         x.fill();
       }
       x.fillStyle = rgba(COLOR.ai, 0.9);
@@ -422,6 +401,7 @@ class StreamLayer implements Layer {
     const cols = 140;
     const rows = Math.round(cols * (box.h / box.w));
     const g = sample(k.img, cols, rows);
+    const lum = detail(g, 6, 0.8);
     const n = Math.floor(box.h / sp);
     const pts = Math.ceil(W / this.step) + 1;
     const amp = sp * 2.1;
@@ -437,7 +417,7 @@ class StreamLayer implements Layer {
         let l = 1;
         if (gx >= 0 && gx < cols) {
           a = g.a[gy * cols + gx];
-          l = g.lum[gy * cols + gx];
+          l = lum[gy * cols + gx];
         }
         const v = a > 0.4 ? (0.35 + 0.65 * (1 - l)) * a : 0;
         ys[pi] = y0 - amp * v + Math.sin(xx * 0.045 + li * 1.7) * (a > 0.4 ? 0.9 : 0.35);
