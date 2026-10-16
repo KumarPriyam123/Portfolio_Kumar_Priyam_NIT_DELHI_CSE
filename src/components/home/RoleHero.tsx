@@ -9,7 +9,7 @@
 import Link from 'next/link';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { ROLES, ROLE, type RoleId } from '@/data/roles';
-import { CTA_LABEL, RESUMES, SITE } from '@/lib/site';
+import { CTA_LABEL, SITE, resumeFor } from '@/lib/site';
 import type { RolePortrait } from '@/lib/portrait/portrait';
 
 const DUR: Record<RoleId, number> = { sde: 7000, ai: 7000, data: 6000 };
@@ -277,8 +277,8 @@ export default function RoleHero() {
             <Link className="kp-btn kp-btn--accent" href="/connect">
               {CTA_LABEL}
             </Link>
-            <a className="kp-btn kp-btn--ghost" href={RESUMES[0].href} target="_blank" rel="noopener noreferrer">
-              Résumé
+            <a className="kp-btn kp-btn--ghost" href={resumeFor(role).href} target="_blank" rel="noopener noreferrer">
+              {r.short} résumé
               <span className="kp-arrow" aria-hidden="true">
                 ↗
               </span>
