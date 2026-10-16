@@ -1,5 +1,23 @@
 # BRIEF: kpriyam.me
 
+> **v2 (17 Oct 2026) supersedes v1 below.** Kept for history. Feedback from Kumar *(his)*: v1 read as "AI engineer only"; Software and AI must weigh equally and separately, Data too; open on Software, then AI, mixed rather than all-SDE; use his photo, animated, and make it look cool.
+
+## v2: Three crafts
+
+| | Decision |
+|---|---|
+| Belief | He is a software engineer **and** an AI engineer **and** a data engineer, with real numbers for each. |
+| Colour | Each craft owns one: Software teal `#5eead4`, AI amber `#f2b544`, Data coral `#ff8a65`. The site accent becomes a bright neutral, so no craft dominates. Green `#4ade80` only for "open to roles". |
+| Hero (peak) | His photo, background removed, drawn live on canvas three ways: **Software** typeset from code that types itself in, **AI** a neural graph with activations walking its edges (pointer = attention), **Data** streamlines displaced by the face with records flowing. Block dissolve between them. Cycles Software 7s → AI 7s → Data 6s; tabs take over; pauses on hover/focus, off screen, and entirely under reduced motion (static renders). Giant name sits behind the head. |
+| Order | Hero → What I build (Software and AI side by side at equal size, Data band below, each with an animated diagram) → Selected work (mixed bento grid, craft badges, filter + BM25 search) → Research (pin + count) → Since 2023 (pan) → About (real photo) → Contact. |
+| Kept from v1 | Query carry-over (nav chip, case-study marks, contact prefill), research and timeline acts, copy rules, CTA label. |
+| Dropped | WebGL term field, scroll-typed query act. |
+| Numbers | All from `src/data/projects.ts` via `src/data/roles.ts`. None invented. |
+
+---
+
+# v1 (16 Oct 2026, superseded)
+
 **Self-authored under explicit creative delegation** ("redesign UI and deep think to make UI world class", 16 Oct 2026).
 Seeded with decisions Kumar had already recorded for the rebuild; those are marked *(his)*. Everything else is an authored decision.
 

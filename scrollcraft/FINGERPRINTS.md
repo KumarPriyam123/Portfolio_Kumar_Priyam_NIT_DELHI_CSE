@@ -29,6 +29,7 @@ changes only grammar and world will fail it.
 | Build | Grammar | Nav treatment | Hero device | Act-sequence shape | Close pattern | Signature move | World | Port |
 |---|---|---|---|---|---|---|---|---|
 | kpriyam (Oct 2026) | Query index (new): the visitor's query is the navigation | Slim bar + a query chip that carries the visitor's query across every page | Name at composition scale over a WebGL point field in its noise state; lines mask up on load | flow (hero + authored silence) > pin 2.6 (peak) > flow > pin 1.9 + count > pan 2.5 > flow; 7 beats, 11.7vh desktop | Real inquiry form pre-filled with the visitor's query and top matches; footer below | The field answers your query: matching stack terms turn amber, pull forward and draw rays from the input while the projects re-rank by BM25 | Computed: dark blue-black latent space, amber relevance | Next.js 15 app |
+| kpriyam v2 (Oct 2026) | Three crafts, equal weight: Software, AI and Data each own a colour | Slim bar + query chip (kept) | Generated portrait from his photo on canvas, re-drawn per craft (code / neural graph / data streams) with a block dissolve, giant name behind the head; auto-cycles Software → AI → Data | flow (hero) > flow (crafts pair + data band) > flow (mixed grid) > pin 1.9 + count > pan 2.5 > flow (about, real photo) > flow; 7 beats | Real inquiry form, query carried | One face, three crafts: the same portrait typeset in code, wired as a network and carried by pipelines | Computed from a photo: blue-black ground, teal / amber / coral | Next.js 15 app |
 
 ---
 

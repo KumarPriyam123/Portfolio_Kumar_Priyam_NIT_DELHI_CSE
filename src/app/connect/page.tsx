@@ -3,7 +3,7 @@ import ContactPanel from '@/components/ContactPanel';
 
 export const metadata: Metadata = {
   title: 'Contact',
-  description: 'Get in touch with Kumar Priyam about AI Engineer, SDE and Data Engineer roles.',
+  description: 'Get in touch with Kumar Priyam about Software Engineer, AI Engineer and Data Engineer roles.',
   alternates: { canonical: '/connect' },
 };
 

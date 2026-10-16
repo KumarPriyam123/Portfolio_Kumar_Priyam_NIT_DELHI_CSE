@@ -1,9 +1,9 @@
 import type { Metadata } from 'next';
-import WorkList from '@/components/WorkList';
+import WorkGrid from '@/components/WorkGrid';
 
 export const metadata: Metadata = {
   title: 'Projects',
-  description: 'Six systems by Kumar Priyam: semantic job matching, a WhatsApp clinic queue, multi-agent RL for RAG, a real-time interview platform and data pipelines. Rank them by role or stack.',
+  description: 'Six systems by Kumar Priyam across software, AI and data: semantic job matching, a WhatsApp clinic queue, a real-time interview platform, multi-agent RL for RAG and data pipelines.',
   alternates: { canonical: '/projects' },
 };
 
@@ -11,7 +11,7 @@ export default function ProjectsPage() {
   return (
     <div className="kp-page pb-[var(--sc-section)]">
       <div className="sc-wrap">
-        <WorkList variant="index" headingId="projects-title" />
+        <WorkGrid variant="index" headingId="projects-title" />
       </div>
     </div>
   );

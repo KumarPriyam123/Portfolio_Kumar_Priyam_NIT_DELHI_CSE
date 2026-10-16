@@ -4,7 +4,7 @@
 export const SITE = {
   name: 'Kumar Priyam',
   url: 'https://kpriyam.me',
-  role: 'AI Engineer · SDE · Data Engineer',
+  role: 'Software Engineer · AI Engineer · Data Engineer',
   status: 'Open to roles',
   location: 'New Delhi, India',
   institution: 'NIT Delhi',
@@ -18,7 +18,7 @@ export const SITE = {
   github: 'https://github.com/KumarPriyam123',
   linkedin: 'https://www.linkedin.com/in/kumar-priyam-71bbb82a7/',
   description:
-    'B.Tech Computer Science at NIT Delhi, Class of 2027. Building multi-agent AI systems, full-stack platforms and scalable data pipelines, from RAG architectures to production ETL.',
+    'B.Tech Computer Science at NIT Delhi, Class of 2027. Building full-stack platforms, AI systems and data pipelines, from real-time products and RAG to production ETL.',
 } as const;
 
 export const RESUMES = [
@@ -36,9 +36,8 @@ export const RESUMES = [
   },
 ] as const;
 
-// Drop a portrait at public/portrait.jpg and set this to '/portrait.jpg'.
-// Left null so the profile page never renders a broken image.
-export const PORTRAIT_SRC: string | null = null;
+// Background-removed cutout (413×531). The hero portrait is generated from it.
+export const PORTRAIT_SRC: string | null = '/portrait/kumar-cutout.webp';
 
 export const WEB3FORMS_KEY = '79001377-2d40-48d5-af4c-4a629bedb258';
 
