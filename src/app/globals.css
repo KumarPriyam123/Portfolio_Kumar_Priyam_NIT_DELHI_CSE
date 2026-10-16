@@ -709,7 +709,7 @@ mark.kp-mark { background: color-mix(in oklab, var(--kp-sde) 22%, transparent); 
   margin-inline: auto;
   padding: calc(var(--kp-nav-h) + 1rem) var(--sc-gutter) clamp(1.75rem, 5vh, 3.5rem);
   display: grid;
-  grid-template-columns: minmax(0, 21rem) minmax(0, 1fr) minmax(0, 20rem);
+  grid-template-columns: minmax(0, 21rem) minmax(0, 1fr) minmax(0, 21.5rem);
   grid-template-rows: 1fr auto;
   pointer-events: none;
 }
@@ -884,6 +884,7 @@ mark.kp-mark { background: color-mix(in oklab, var(--kp-sde) 22%, transparent); 
 .kp-craft__cv { color: var(--sc-ink-soft); }
 .kp-chips { margin-top: 1.25rem; display: flex; flex-wrap: wrap; gap: 0.4rem; }
 .kp-chips span { font-family: var(--sc-font-mono); font-size: 0.72rem; padding: 0.28rem 0.6rem; border: 1px solid var(--sc-hairline-strong); border-radius: 999px; }
+.kp-craft__resume { margin-top: 1.25rem; }
 .kp-craft__links { margin-top: 1.25rem; display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.35rem 1rem; font-size: var(--sc-t-sm); }
 @media (max-width: 960px) {
   .kp-crafts__head { grid-template-columns: 1fr; }

@@ -1,33 +1,17 @@
-import Link from "next/link";
-import { projects } from "@/data/projects";
-import { ROLE, type Role } from "@/data/roles";
-import { splitTitle } from "@/lib/site";
-import { AiFig, DataFig, SdeFig } from "@/components/art/CraftFigs";
+import Link from 'next/link';
+import { projects } from '@/data/projects';
+import { ROLE, type Role } from '@/data/roles';
+import { resumeFor, splitTitle } from '@/lib/site';
+import { AiFig, DataFig, SdeFig } from '@/components/art/CraftFigs';
 
 // Software and AI side by side at equal weight, data underneath both.
 // Every number comes from roles.ts, which takes it from the case studies.
 
-const nameOf = (slug: string) =>
-  splitTitle(projects.find((p) => p.slug === slug)?.title ?? slug).name;
+const nameOf = (slug: string) => splitTitle(projects.find((p) => p.slug === slug)?.title ?? slug).name;
 
-function Craft({
-  r,
-  n,
-  fig,
-  wide = false,
-}: {
-  r: Role;
-  n: string;
-  fig: React.ReactNode;
-  wide?: boolean;
-}) {
+function Craft({ r, n, fig, wide = false }: { r: Role; n: string; fig: React.ReactNode; wide?: boolean }) {
   return (
-    <article
-      className="kp-craft"
-      data-for={r.id}
-      data-wide={wide ? "true" : undefined}
-      aria-labelledby={`craft-${r.id}`}
-    >
+    <article className="kp-craft" data-for={r.id} data-wide={wide ? 'true' : undefined} aria-labelledby={`craft-${r.id}`}>
       <div className="kp-craft__body">
         <div className="kp-craft__main">
           <header className="kp-craft__head">
@@ -71,6 +55,12 @@ function Craft({
               </Link>
             ))}
           </p>
+          <a className="kp-btn kp-btn--ghost kp-btn--sm kp-craft__resume" href={resumeFor(r.id).href} target="_blank" rel="noopener noreferrer">
+            {r.title} résumé
+            <span className="kp-arrow" aria-hidden="true">
+              ↗
+            </span>
+          </a>
         </div>
       </div>
       <div className="kp-craft__fig">{fig}</div>
@@ -80,21 +70,13 @@ function Craft({
 
 export default function Crafts() {
   return (
-    <section
-      id="crafts"
-      className="kp-sheet-section kp-crafts"
-      data-sc-act="flow"
-      aria-labelledby="crafts-title"
-    >
+    <section id="crafts" className="kp-sheet-section kp-crafts" data-sc-act="flow" aria-labelledby="crafts-title">
       <div className="sc-wrap">
         <div className="kp-crafts__head" data-sc-in>
           <h2 id="crafts-title" className="kp-display kp-h1">
             What I build
           </h2>
-          <p className="kp-lede">
-            Products people use, the models inside them, and the pipelines that
-            feed both.
-          </p>
+          <p className="kp-lede">Products people use, the models inside them, and the pipelines that feed both.</p>
         </div>
         <div className="kp-crafts__pair" data-sc-in data-sc-stagger="90">
           <Craft r={ROLE.sde} n="01" fig={<SdeFig />} />

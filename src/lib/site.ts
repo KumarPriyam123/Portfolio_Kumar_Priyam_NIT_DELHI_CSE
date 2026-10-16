@@ -21,20 +21,30 @@ export const SITE = {
     'B.Tech Computer Science at NIT Delhi, Class of 2027. Building full-stack platforms, AI systems and data pipelines, from real-time products and RAG to production ETL.',
 } as const;
 
+// One per craft, in craft order. `id` matches RoleId in src/data/roles.ts so
+// the hero can link the résumé for the craft on screen.
 export const RESUMES = [
   {
-    id: 'ai-sde',
-    label: 'AI + SDE',
-    blurb: 'AI engineering, full-stack, LLM orchestration',
+    id: 'sde',
+    label: 'Software Engineer',
+    blurb: 'Full-stack, backend and real-time systems',
+    href: 'https://drive.google.com/file/d/1sDOkbyz0YaCgN3EzVKoCykDRa7ZAyBo9/view',
+  },
+  {
+    id: 'ai',
+    label: 'AI Engineer',
+    blurb: 'RAG, multi-agent RL and LLM systems',
     href: 'https://drive.google.com/file/d/1lPMTdrULT4iWPU5typRmVDVlBtF81wHf/view',
   },
   {
     id: 'data',
-    label: 'Data Engineering',
+    label: 'Data Engineer',
     blurb: 'ETL pipelines, Airflow, data infrastructure',
     href: 'https://drive.google.com/file/d/1XJmW1XJ5lQ17fY251xmbZpC3lzsZgviR/view',
   },
 ] as const;
+
+export const resumeFor = (id: string) => RESUMES.find((r) => r.id === id) ?? RESUMES[0];
 
 // Background-removed cutout (413×531). The hero portrait is generated from it.
 export const PORTRAIT_SRC: string | null = '/portrait/kumar-cutout.webp';
