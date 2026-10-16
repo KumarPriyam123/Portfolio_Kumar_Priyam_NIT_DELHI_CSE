@@ -37,7 +37,7 @@ export default function TimelineAct() {
           ))}
           <li className="kp-tl__end">
             <p className="kp-tl__when">2027</p>
-            <p className="kp-tl__title">Graduating. Open to AI Engineer, SDE and Data Engineer roles.</p>
+            <p className="kp-tl__title">Graduating. Open to Software Engineer, AI Engineer and Data Engineer roles.</p>
             <p className="kp-tl__facts">Alongside it all: LeetCode peak 1542, 300+ problems, Codeforces and GFG.</p>
           </li>
         </ol>

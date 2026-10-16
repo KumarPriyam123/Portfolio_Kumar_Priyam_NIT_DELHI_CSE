@@ -23,16 +23,16 @@ const archivo = localFont({
 export const metadata: Metadata = {
   metadataBase: new URL(SITE.url),
   title: {
-    default: `${SITE.name}: AI Engineer, SDE, Data Engineer`,
+    default: `${SITE.name}: Software Engineer, AI Engineer, Data Engineer`,
     template: `%s · ${SITE.name}`,
   },
   description: SITE.description,
   keywords: [
     'Kumar Priyam',
     'NIT Delhi',
-    'AI Engineer',
     'Software Engineer',
     'SDE',
+    'AI Engineer',
     'Data Engineering',
     'Multi-Agent RL',
     'RAG Pipelines',
@@ -47,14 +47,14 @@ export const metadata: Metadata = {
   creator: SITE.name,
   alternates: { canonical: '/' },
   openGraph: {
-    title: `${SITE.name}: AI Engineer, SDE, Data Engineer`,
-    description: 'B.Tech CS at NIT Delhi. Multi-agent AI systems, full-stack platforms and data pipelines, from research to production.',
+    title: `${SITE.name}: Software Engineer, AI Engineer, Data Engineer`,
+    description: 'B.Tech CS at NIT Delhi. Full-stack products, AI systems and data pipelines, from research to production.',
     url: SITE.url,
     siteName: SITE.name,
     type: 'website',
     locale: 'en_IN',
   },
-  twitter: { card: 'summary_large_image', title: `${SITE.name}: AI Engineer, SDE, Data Engineer` },
+  twitter: { card: 'summary_large_image', title: `${SITE.name}: Software Engineer, AI Engineer, Data Engineer` },
   robots: { index: true, follow: true },
 };
 
@@ -72,7 +72,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body>
         <noscript>
           {/* Without the engine nothing would ever fade in. Show everything. */}
-          <style>{`[data-sc-cue],[data-sc-in],[data-sc-stagger]>*{opacity:1!important;transform:none!important}.kp-field{display:none}`}</style>
+          <style>{`[data-sc-cue],[data-sc-in],[data-sc-stagger]>*{opacity:1!important;transform:none!important}`}</style>
         </noscript>
         <a className="kp-skip" href="#main">
           Skip to content

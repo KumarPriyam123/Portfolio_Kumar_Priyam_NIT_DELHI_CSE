@@ -1,9 +1,8 @@
 'use client';
 
-// The visitor's query is page state that travels: the field, the ranked work,
-// the nav chip, case studies and the contact message all read it. Only a query
-// the visitor chose ("user") persists; the scroll-typed sample ("demo") never
-// leaves the page it was typed on.
+// The visitor's search is page state that travels: the work grid, the nav
+// chip, case studies and the contact message all read it. Only a query the
+// visitor typed ("user") persists, in sessionStorage.
 
 import { useSyncExternalStore } from 'react';
 

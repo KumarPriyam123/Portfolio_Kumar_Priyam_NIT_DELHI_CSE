@@ -20,7 +20,10 @@ export default function ProfilePage() {
           </div>
           {PORTRAIT_SRC ? (
             // eslint-disable-next-line @next/next/no-img-element
-            <img src={PORTRAIT_SRC} alt="Kumar Priyam" width={640} height={800} className="w-full max-w-sm rounded-[var(--sc-r-md)] object-cover lg:justify-self-end" style={{ height: 'auto' }} />
+            <div className="kp-about__frame w-full max-w-sm lg:justify-self-end">
+              <span className="kp-about__ring" aria-hidden="true" />
+              <img src={PORTRAIT_SRC} alt="Kumar Priyam" width={413} height={531} className="kp-about__img" />
+            </div>
           ) : (
             <dl className="kp-dl">
               <dt>Based in</dt>
@@ -30,7 +33,7 @@ export default function ProfilePage() {
                 B.Tech CSE, {SITE.institution}, {SITE.years}
               </dd>
               <dt>Status</dt>
-              <dd>{SITE.status}: AI Engineer, SDE, Data Engineer</dd>
+              <dd>{SITE.status}: Software Engineer, AI Engineer, Data Engineer</dd>
             </dl>
           )}
         </header>

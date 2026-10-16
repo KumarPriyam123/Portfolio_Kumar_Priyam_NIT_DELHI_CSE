@@ -75,7 +75,7 @@ export default function ContactPanel({ headingLevel = 'h2' }: { headingLevel?: '
         <H id="contact-title" className="kp-display kp-h1">
           {CTA_LABEL}.
         </H>
-        <p className="kp-lede mt-5">I&apos;m looking for AI Engineer, SDE and Data Engineer roles. Tell me about the system you&apos;re building.</p>
+        <p className="kp-lede mt-5">I&apos;m looking for Software Engineer, AI Engineer and Data Engineer roles. Tell me about the system you&apos;re building.</p>
         <div className="kp-direct">
           <a href={`mailto:${SITE.email}`}>
             <span className="kp-direct__k">Email</span>
@@ -157,7 +157,7 @@ export default function ContactPanel({ headingLevel = 'h2' }: { headingLevel?: '
               name="message"
               required
               rows={6}
-              placeholder="Hi Kumar, I'd like to talk about an AI Engineer, SDE or Data Engineer role."
+              placeholder="Hi Kumar, I'd like to talk about a Software Engineer, AI Engineer or Data Engineer role."
               value={form.message}
               disabled={status === 'sending'}
               onChange={(e) => {

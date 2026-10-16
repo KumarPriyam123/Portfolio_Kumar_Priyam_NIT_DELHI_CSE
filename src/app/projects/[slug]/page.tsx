@@ -3,13 +3,9 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { getProjectBySlug, projects } from '@/data/projects';
 import Marked, { MatchNote } from '@/components/Marked';
+import RoleBadges from '@/components/RoleBadges';
 import { clean, splitLead, splitTitle } from '@/lib/site';
 
-const CATEGORY: Record<string, string> = {
-  fullstack: 'Full-Stack + AI',
-  'ai-research': 'AI Research',
-  'data-engineering': 'Data Engineering',
-};
 
 export function generateStaticParams() {
   return projects.map((p) => ({ slug: p.slug }));
@@ -46,7 +42,7 @@ export default async function ProjectPage({ params }: { params: Promise<{ slug: 
 
         <header className="mt-10 grid gap-10 lg:grid-cols-[minmax(0,1.35fr)_minmax(0,1fr)] lg:items-end">
           <div data-sc-in>
-            <p className="kp-label">{CATEGORY[p.category]}</p>
+            <RoleBadges slug={p.slug} size="md" />
             <h1 className="kp-display kp-h1 mt-4">{name}</h1>
             {sub && <p className="kp-lede mt-4">{sub}</p>}
             <p className="kp-body mt-4">{p.description}</p>
@@ -96,8 +92,10 @@ export default async function ProjectPage({ params }: { params: Promise<{ slug: 
                 </span>
               ))}
             </dd>
-            <dt>Category</dt>
-            <dd>{CATEGORY[p.category]}</dd>
+            <dt>Crafts</dt>
+            <dd>
+              <RoleBadges slug={p.slug} />
+            </dd>
           </dl>
         </div>
 

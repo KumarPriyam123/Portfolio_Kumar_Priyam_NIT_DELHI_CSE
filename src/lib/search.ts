@@ -3,7 +3,6 @@
 // the page says so: it is not presented as embeddings.
 
 import { projects, type Project } from '@/data/projects';
-import { TERMS } from '@/lib/terms';
 
 const STOP = new Set(
   'a an the and or of to in for with on by from at as is are be been that this it its into via per who we our your you i my me not no than then each every only when which while without within over under across both all any can will would also but so one two three us use used using based like need needs want looking hiring hire role roles someone engineer engineers developer'.split(' '),
@@ -176,29 +175,3 @@ export function rank(q: string): { parsed: Parsed; results: Ranked[]; hasQuery: 
     results: scored.map(({ i: _i, ...r }) => ({ ...r, rel: top > 0 ? r.score / top : 0 })),
   };
 }
-
-/** Which field terms a query lights, 0..1 each, in TERMS order. */
-export function termHits(q: string, results: Ranked[]): number[] {
-  const parsed = parseQuery(q);
-  const direct = ' ' + parsed.normed + ' ' + parsed.direct.join(' ') + ' ';
-  const expanded = ' ' + parsed.expanded.join(' ') + ' ';
-  const topText = results[0] && results[0].score > 0 ? norm(results[0].project.tags.join(' ')) : '';
-  return TERMS.map((t) => {
-    if (t.re.test(direct)) return 1;
-    if (t.re.test(expanded)) return 0.8;
-    if (topText && t.re.test(topText)) return 0.4;
-    return 0;
-  });
-}
-
-/** Which projects use each term, for placing it in the field. */
-export function termUsage(): { term: (typeof TERMS)[number]; categories: Project['category'][] }[] {
-  const texts = projects.map((p) => ({
-    cat: p.category,
-    text: ' ' + norm([p.title, p.tags.join(' '), p.description, p.approach, ...(p.highlights ?? [])].join(' ')) + ' ',
-  }));
-  return TERMS.map((term) => ({ term, categories: texts.filter((x) => term.re.test(x.text)).map((x) => x.cat) }));
-}
-
-export const PRESETS = ['AI engineer', 'Backend SDE', 'Full-stack', 'Data engineer', 'Research'];
-export const DEMO_QUERY = 'AI engineer, RAG, vector search, Postgres';
