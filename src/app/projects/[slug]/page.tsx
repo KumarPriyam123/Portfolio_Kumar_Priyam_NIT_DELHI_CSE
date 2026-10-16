@@ -1,150 +1,162 @@
-'use client';
-
-import React, { useEffect } from 'react';
+import type { Metadata } from 'next';
 import Link from 'next/link';
-import { useParams } from 'next/navigation';
-import { projects, getProjectBySlug } from '@/data/projects';
+import { notFound } from 'next/navigation';
+import { getProjectBySlug, projects } from '@/data/projects';
+import Marked, { MatchNote } from '@/components/Marked';
+import { clean, splitLead, splitTitle } from '@/lib/site';
 
-const categoryLabel: Record<string, string> = {
-  'data-engineering': 'Data Engineering',
-  'ai-research': 'AI Research',
+const CATEGORY: Record<string, string> = {
   fullstack: 'Full-Stack + AI',
+  'ai-research': 'AI Research',
+  'data-engineering': 'Data Engineering',
 };
 
-export default function ProjectDetailPage() {
-  const params = useParams();
-  const slug = typeof params.slug === 'string' ? params.slug : '';
-  const project = getProjectBySlug(slug);
-  const currentIndex = projects.findIndex((p) => p.slug === slug);
-  const prevProject = currentIndex > 0 ? projects[currentIndex - 1] : projects[projects.length - 1];
-  const nextProject = currentIndex < projects.length - 1 ? projects[currentIndex + 1] : projects[0];
+export function generateStaticParams() {
+  return projects.map((p) => ({ slug: p.slug }));
+}
 
-  useEffect(() => {
-    if (project) document.title = `${project.title} — Kumar Priyam`;
-  }, [project]);
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
+  const { slug } = await params;
+  const p = getProjectBySlug(slug);
+  if (!p) return { title: 'Not found' };
+  const { name } = splitTitle(p.title);
+  return {
+    title: name,
+    description: p.description,
+    alternates: { canonical: `/projects/${p.slug}` },
+    openGraph: { title: `${name} · Kumar Priyam`, description: p.description, url: `/projects/${p.slug}` },
+  };
+}
 
-  if (!project) {
-    return (
-      <div className="mx-auto flex min-h-[60vh] max-w-editorial flex-col items-center justify-center px-5 text-center">
-        <span className="eyebrow text-accent">Error 404</span>
-        <h1 className="mt-4 font-display text-4xl font-light text-ink">Record not found</h1>
-        <p className="mt-2 text-muted">The requested engineering record does not exist.</p>
-        <Link href="/projects" className="mt-6 font-mono text-xs uppercase tracking-[0.16em] text-ink link-underline">
-          ← Back to Projects
-        </Link>
-      </div>
-    );
-  }
-
-  const label = categoryLabel[project.category] || categoryLabel.fullstack;
-  const sections = [
-    { no: '01', label: 'Problem', body: project.problem, accent: false },
-    { no: '02', label: 'Approach', body: project.approach, accent: true },
-    { no: '03', label: 'Outcome', body: project.outcome, accent: false },
-  ];
+export default async function ProjectPage({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params;
+  const p = getProjectBySlug(slug);
+  if (!p) notFound();
+  const { name, sub } = splitTitle(p.title);
+  const i = projects.findIndex((x) => x.slug === p.slug);
+  const prev = projects[(i - 1 + projects.length) % projects.length];
+  const next = projects[(i + 1) % projects.length];
 
   return (
-    <div>
-      <div className="mx-auto max-w-editorial px-5 pt-10 sm:px-8">
-        <Link href="/projects" className="font-mono text-[11px] uppercase tracking-[0.16em] text-muted transition-colors hover:text-accent">
-          ← Index
+    <article className="kp-page">
+      <div className="sc-wrap">
+        <Link href="/projects" className="kp-crumb">
+          <span aria-hidden="true">←</span> All work
         </Link>
-      </div>
 
-      {/* Header */}
-      <section className="mx-auto max-w-editorial px-5 py-10 sm:px-8 sm:py-14">
-        <span className="reveal eyebrow text-accent">{label}</span>
-        <h1 className="reveal delay-1 mt-5 max-w-4xl font-display text-4xl font-light leading-[1.06] tracking-[-0.02em] text-ink sm:text-6xl">
-          {project.title}
-        </h1>
-        <p className="reveal delay-2 mt-6 max-w-2xl text-xl font-light leading-relaxed text-muted">
-          {project.description}
-        </p>
+        <header className="mt-10 grid gap-10 lg:grid-cols-[minmax(0,1.35fr)_minmax(0,1fr)] lg:items-end">
+          <div data-sc-in>
+            <p className="kp-label">{CATEGORY[p.category]}</p>
+            <h1 className="kp-display kp-h1 mt-4">{name}</h1>
+            {sub && <p className="kp-lede mt-4">{sub}</p>}
+            <p className="kp-body mt-4">{p.description}</p>
+            <div className="mt-7 flex flex-wrap gap-3">
+              {p.liveUrl && (
+                <a className="kp-btn kp-btn--accent" href={p.liveUrl} target="_blank" rel="noopener noreferrer">
+                  Open live
+                  <span className="kp-arrow" aria-hidden="true">
+                    ↗
+                  </span>
+                </a>
+              )}
+              {p.githubUrl && (
+                <a className="kp-btn kp-btn--ghost" href={p.githubUrl} target="_blank" rel="noopener noreferrer">
+                  Source on GitHub
+                  <span className="kp-arrow" aria-hidden="true">
+                    ↗
+                  </span>
+                </a>
+              )}
+            </div>
+          </div>
+          {p.metrics && (
+            <dl className="grid grid-cols-3 gap-6 border-t border-[var(--sc-hairline-strong)] pt-5" data-sc-in>
+              {p.metrics.map((m) => (
+                <div key={m.label}>
+                  <dt className="sr-only">{m.label}</dt>
+                  <dd className="kp-stat">{m.value}</dd>
+                  <dd className="kp-metric__l" aria-hidden="true">
+                    {m.label}
+                  </dd>
+                </div>
+              ))}
+            </dl>
+          )}
+        </header>
 
-        <div className="reveal delay-3 mt-8 flex flex-wrap gap-x-5 gap-y-1.5" aria-label="Technologies used">
-          {project.tags.map((tag) => (
-            <span key={tag} className="font-mono text-[11px] uppercase tracking-[0.1em] text-faint">
-              {tag}
-            </span>
-          ))}
+        <MatchNote slug={p.slug} />
+
+        <div className="mt-14">
+          <dl className="kp-dl" data-sc-in>
+            <dt>Stack</dt>
+            <dd className="flex flex-wrap gap-x-4 gap-y-1">
+              {p.tags.map((t) => (
+                <span key={t}>
+                  <Marked text={t} />
+                </span>
+              ))}
+            </dd>
+            <dt>Category</dt>
+            <dd>{CATEGORY[p.category]}</dd>
+          </dl>
         </div>
 
-        {(project.githubUrl || project.liveUrl) && (
-          <div className="reveal delay-4 mt-8 flex flex-wrap gap-4">
-            {project.githubUrl && (
-              <a href={project.githubUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 border border-rule px-5 py-3 font-mono text-[11px] uppercase tracking-[0.16em] text-ink transition-colors hover:border-accent hover:text-accent">
-                View Source ↗
-              </a>
-            )}
-            {project.liveUrl && (
-              <a href={project.liveUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 bg-ink px-5 py-3 font-mono text-[11px] uppercase tracking-[0.16em] text-paper transition-colors hover:bg-accent">
-                Live Demo ↗
-              </a>
-            )}
-          </div>
-        )}
-      </section>
-
-      {/* Problem / Approach / Outcome */}
-      <section className="border-t border-rule">
-        <div className="mx-auto max-w-editorial px-5 sm:px-8">
-          {sections.map((s) => (
-            <div key={s.no} className="grid gap-4 border-b border-rule py-10 md:grid-cols-12 md:gap-8 md:py-14">
-              <div className="md:col-span-4">
-                <span className="font-mono text-xs text-accent">{s.no}</span>
-                <h2 className="mt-3 font-display text-2xl font-light tracking-tight text-ink">
-                  {s.label}
-                </h2>
-              </div>
-              <p className={`md:col-span-8 text-lg font-light leading-relaxed ${s.accent ? 'text-ink' : 'text-muted'}`}>
-                {s.body}
+        <section className="mt-16" aria-label="Case study">
+          {(
+            [
+              ['Problem', p.problem],
+              ['Approach', p.approach],
+              ['Outcome', p.outcome],
+            ] as const
+          ).map(([k, v]) => (
+            <div key={k} className="kp-spread" data-sc-in>
+              <h2 className="kp-spread__k">{k}</h2>
+              <p className={k === 'Problem' ? 'kp-lede max-w-[60ch]' : 'kp-prose'}>
+                <Marked text={clean(v)} />
               </p>
             </div>
           ))}
-        </div>
-      </section>
-
-      {/* Highlights */}
-      {project.highlights && project.highlights.length > 0 && (
-        <section className="mx-auto max-w-editorial px-5 py-14 sm:px-8 sm:py-20">
-          <div className="flex items-baseline justify-between border-b border-rule pb-5">
-            <h2 className="font-display text-2xl font-light tracking-tight text-ink">
-              Technical Highlights
-            </h2>
-            <span className="eyebrow text-faint">{`(${project.highlights.length})`}</span>
-          </div>
-          <ul>
-            {project.highlights.map((h, idx) => (
-              <li key={idx} className="grid grid-cols-12 gap-4 border-b border-rule py-5">
-                <span className="col-span-2 font-mono text-xs text-accent sm:col-span-1">
-                  {String(idx + 1).padStart(2, '0')}
-                </span>
-                <p className="col-span-10 text-[15px] leading-relaxed text-muted sm:col-span-11">
-                  {h}
-                </p>
-              </li>
-            ))}
-          </ul>
         </section>
-      )}
 
-      {/* Prev / Next */}
-      <section className="border-t border-rule">
-        <div className="mx-auto grid max-w-editorial grid-cols-1 sm:grid-cols-2">
-          <Link href={`/projects/${prevProject.slug}`} className="group border-b border-rule px-5 py-8 transition-colors hover:bg-surface sm:border-b-0 sm:border-r sm:px-8">
-            <span className="eyebrow text-faint">← Previous</span>
-            <p className="mt-2 font-display text-xl font-light text-ink transition-colors group-hover:text-accent">
-              {prevProject.title}
-            </p>
+        {p.highlights && p.highlights.length > 0 && (
+          <section className="kp-spread" aria-labelledby="hl-title">
+            <h2 id="hl-title" className="kp-spread__k">
+              Engineering detail
+            </h2>
+            <ol className="kp-list" data-sc-in>
+              {p.highlights.map((h, n) => {
+                const { lead, detail } = splitLead(h);
+                return (
+                  <li key={n}>
+                    <span className="kp-list__n">{String(n + 1).padStart(2, '0')}</span>
+                    <p>
+                      <span className="kp-lead">
+                        <Marked text={clean(lead)} />
+                      </span>
+                      {detail && (
+                        <span className="kp-soft">
+                          . <Marked text={detail} />
+                        </span>
+                      )}
+                    </p>
+                  </li>
+                );
+              })}
+            </ol>
+          </section>
+        )}
+
+        <nav className="kp-pager mt-10" aria-label="More work">
+          <Link href={`/projects/${prev.slug}`}>
+            <span className="kp-label">Previous</span>
+            <span className="kp-pager__t">{splitTitle(prev.title).name}</span>
           </Link>
-          <Link href={`/projects/${nextProject.slug}`} className="group px-5 py-8 text-right transition-colors hover:bg-surface sm:px-8">
-            <span className="eyebrow text-faint">Next →</span>
-            <p className="mt-2 font-display text-xl font-light text-ink transition-colors group-hover:text-accent">
-              {nextProject.title}
-            </p>
+          <Link href={`/projects/${next.slug}`} className="text-right">
+            <span className="kp-label">Next</span>
+            <span className="kp-pager__t">{splitTitle(next.title).name}</span>
           </Link>
-        </div>
-      </section>
-    </div>
+        </nav>
+      </div>
+    </article>
   );
 }

@@ -1,55 +1,64 @@
-import React from 'react';
 import type { Metadata } from 'next';
+import Link from 'next/link';
 import { researchPapers } from '@/data/research';
-import ResearchCard from '@/components/ResearchCard';
+import { splitTitle } from '@/lib/site';
 
 export const metadata: Metadata = {
-  title: 'Research — Kumar Priyam',
-  description:
-    'Academic research exploring multi-agent systems, reinforcement learning, and AI retrieval optimization by Kumar Priyam at NIT Delhi.',
+  title: 'Research',
+  description: 'Research by Kumar Priyam at NIT Delhi on multi-agent systems, reinforcement learning and the optimisation of retrieval-augmented generation.',
+  alternates: { canonical: '/research' },
 };
 
 export default function ResearchPage() {
   return (
-    <div>
-      {/* Masthead */}
-      <section className="border-b border-rule">
-        <div className="mx-auto max-w-editorial px-5 py-16 sm:px-8 sm:py-20">
-          <div className="reveal flex items-baseline justify-between">
-            <span className="eyebrow">Section 03 — Research</span>
-            <span className="eyebrow text-faint">{`(${researchPapers.length})`}</span>
-          </div>
-          <h1 className="reveal delay-1 mt-6 font-display text-5xl font-light tracking-[-0.02em] text-ink sm:text-6xl">
-            Research &amp; Publications
-          </h1>
-          <p className="reveal delay-2 mt-5 max-w-xl text-[1.05rem] leading-relaxed text-muted">
-            Work exploring multi-agent systems, reinforcement learning, and the
-            optimization of retrieval-augmented generation.
-          </p>
-        </div>
-      </section>
+    <div className="kp-page pb-[var(--sc-section)]">
+      <div className="sc-wrap">
+        <header data-sc-in>
+          <h1 className="kp-display kp-h1">Research</h1>
+          <p className="kp-lede mt-5">Multi-agent systems, reinforcement learning, and making retrieval-augmented generation cheaper and more accurate.</p>
+        </header>
 
-      {/* Papers */}
-      <section className="mx-auto max-w-editorial px-5 py-12 sm:px-8 sm:py-16">
-        <div className="space-y-6">
-          {researchPapers.map((paper) => (
-            <ResearchCard
-              key={paper.slug}
-              title={paper.title}
-              authors={paper.authors}
-              institution={paper.institution}
-              date={paper.date}
-              abstract={paper.abstract}
-              tags={paper.tags}
-              slug={paper.slug}
-            />
-          ))}
-        </div>
-
-        <p className="mt-14 border-t border-rule pt-6 font-mono text-[11px] uppercase tracking-[0.14em] text-faint">
-          This index is actively maintained — further reports will be added as completed.
-        </p>
-      </section>
+        <ol className="kp-rows">
+          {researchPapers.map((paper, i) => {
+            const { name, sub } = splitTitle(paper.title);
+            const headline = paper.results.slice(0, 2);
+            return (
+              <li key={paper.slug} className="kp-row" data-sc-in>
+                <span className="kp-row__rank">{String(i + 1).padStart(2, '0')}</span>
+                <div className="min-w-0">
+                  <Link href={`/research/${paper.slug}`} className="kp-row__title">
+                    {name}
+                  </Link>
+                  <span className="kp-row__subtitle">{sub}</span>
+                  <p className="kp-row__desc">
+                    {paper.authors.join(', ')} · {paper.institution} · {paper.date}
+                  </p>
+                  <p className="kp-tags">
+                    {paper.tags.map((t) => (
+                      <span key={t}>{t}</span>
+                    ))}
+                  </p>
+                </div>
+                <dl className="kp-metrics">
+                  {headline.map((r) => (
+                    <div key={r.metric}>
+                      <dt className="sr-only">{r.metric}</dt>
+                      <dd className="kp-metric__v">{r.value}</dd>
+                      <dd className="kp-metric__l" aria-hidden="true">
+                        {r.metric.toLowerCase()}
+                      </dd>
+                    </div>
+                  ))}
+                </dl>
+                <div className="kp-row__side">
+                  <span className="kp-row__rel">Paper</span>
+                </div>
+              </li>
+            );
+          })}
+        </ol>
+        <p className="kp-note mt-8">This index is actively maintained. Further reports will be added as they are completed.</p>
+      </div>
     </div>
   );
 }

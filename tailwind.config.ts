@@ -1,31 +1,26 @@
 import type { Config } from 'tailwindcss';
 
+// Colours and faces come from the scroll-craft tokens in globals.css, so the
+// whole page re-themes from six values. Tailwind is used for layout only.
 const config: Config = {
-  content: [
-    './src/pages/**/*.{js,ts,jsx,tsx,mdx}',
-    './src/components/**/*.{js,ts,jsx,tsx,mdx}',
-    './src/app/**/*.{js,ts,jsx,tsx,mdx}',
-  ],
-  darkMode: 'class',
+  content: ['./src/app/**/*.{ts,tsx}', './src/components/**/*.{ts,tsx}'],
   theme: {
     extend: {
       fontFamily: {
-        display: ['Fraunces', 'ui-serif', 'Georgia', 'serif'],
-        serif: ['Newsreader', 'ui-serif', 'Georgia', 'serif'],
-        mono: ['JetBrains Mono', 'ui-monospace', 'SFMono-Regular', 'monospace'],
+        display: ['var(--sc-font-display)'],
+        sans: ['var(--sc-font-text)'],
+        mono: ['var(--sc-font-mono)'],
       },
       colors: {
-        paper: 'rgb(var(--paper) / <alpha-value>)',
-        surface: 'rgb(var(--surface) / <alpha-value>)',
-        ink: 'rgb(var(--ink) / <alpha-value>)',
-        muted: 'rgb(var(--muted) / <alpha-value>)',
-        faint: 'rgb(var(--faint) / <alpha-value>)',
-        rule: 'rgb(var(--rule) / <alpha-value>)',
-        accent: 'rgb(var(--accent) / <alpha-value>)',
+        canvas: 'var(--sc-canvas)',
+        surface: 'var(--sc-surface)',
+        ink: 'var(--sc-ink)',
+        soft: 'var(--sc-ink-soft)',
+        accent: 'var(--sc-accent)',
+        'accent-ink': 'var(--sc-accent-ink)',
+        line: 'var(--sc-hairline)',
       },
-      maxWidth: {
-        editorial: '76rem',
-      },
+      maxWidth: { page: 'var(--sc-maxw)' },
     },
   },
   plugins: [],
