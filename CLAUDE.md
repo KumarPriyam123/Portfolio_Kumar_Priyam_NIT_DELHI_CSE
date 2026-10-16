@@ -1,70 +1,72 @@
 # CLAUDE.md
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+Guidance for Claude Code in this repo.
 
 ## Commands
 
 ```bash
-npm run dev      # Start dev server at http://localhost:3000
-npm run build    # Production build (type-checks + emits)
-npm run lint     # ESLint via next lint
-npm run start    # Serve the production build
+npm run dev      # http://localhost:3000
+npm run build    # production build (type-checks + emits). No test suite.
 ```
 
-There is no test suite. Type-checking is implicit in `npm run build`.
+## Stack
 
-## Architecture
+Next.js 15 App Router, React 19, TypeScript, Tailwind 3 (layout only). All pages are statically generated; there is no backend. `portfolio.html` is a separate, older single-file version and is not part of the build.
 
-This is a **Next.js 15 App Router** portfolio site (React 19, TypeScript, Tailwind CSS v3). There is no backend — all content is static data, all pages are client components.
+## Design system: "Latent Space" on scroll-craft
 
-**Two separate artifacts live in this repo:**
-- The Next.js app under `src/` — the primary, multi-page portfolio
-- `portfolio.html` — a standalone self-contained single-file version (inline CSS + JS, no build step, open directly in a browser)
+The site is built with the **scroll-craft** skill (`.claude/skills/scroll-craft/`). Read its `SKILL.md` before changing anything on the home page. The design brief, feeling curve and score live in `scrollcraft/builds/kpriyam/BRIEF.md`; the fingerprint registry is `scrollcraft/FINGERPRINTS.md`.
 
-### Data layer
+| Rule | Detail |
+|---|---|
+| Engine is never edited | `public/scrollcraft/scrollcraft.js` and `src/styles/scrollcraft.css` are verbatim copies of the skill's engine. Bespoke behaviour goes in page code, driven off `--sc-p` and our own markup. |
+| Theme = tokens | Six colours + faces in `src/app/globals.css` under `html:root` (must stay `html:root`: the engine CSS lands later in the bundle and wins a `:root` tie). |
+| Colours | canvas `#070a10`, surface `#0e141e`, ink `#e8edf5`, ink-soft `#93a1b6`, ONE accent amber `#f2b544` (means relevance / attention). Dark only. |
+| Type | Archivo variable (display, `font-stretch` 104–118%), Geist (text), Geist Mono (data and labels only). All vendored in `src/app/fonts` (OFL); no font packages. |
+| Classes | Our classes are `kp-*`. Never restyle `.sc-stage`, `.sc-copy` or `[data-sc-*]` selectors. |
+| Copy | No em dashes in visible text (`clean()` / `splitLead()` in `src/lib/site.ts` handle data that has them). No `Section 01` kickers, no scroll cues, no invented numbers. One CTA label: `Start a conversation` (`CTA_LABEL`). |
 
-All site content lives in `src/data/`:
-- `projects.ts` — exports a typed `Project[]` array plus `getProjectBySlug()` and `getProjectsByCategory()` helpers. Adding a project means appending to this array; the projects list page and the dynamic detail page both read from it automatically.
-- `research.ts` — exports `ResearchPaper[]` with the same pattern.
+The engine is mounted per route by `src/components/ScrollCraftMount.tsx` (destroy + mount on navigation, re-layout on body resize).
 
-No API calls, no CMS, no database. Pages import from `src/data/` directly.
+## Home page score (`src/app/page.tsx`)
 
-### Routing
+| Act | Component | Device | Notes |
+|---|---|---|---|
+| Hero | `home/Hero.tsx` | flow + CSS line mask on load | Server component. Do not re-render after the engine touches it. |
+| Silence | same | page scroll | The field condenses noise → three clusters. Authored silence, not dead scroll. |
+| Query (peak) | `home/QueryAct.tsx` | `pin` span 2.6 | Scroll types `DEMO_QUERY` until the visitor touches the input. |
+| Work | `components/WorkList.tsx` | flow + `data-sc-in` | Ranked by the query, FLIP re-rank. Shared with `/projects`. |
+| Research | `home/ResearchAct.tsx` | `pin` + `count` | Cells go dark from CSS reading `--sc-p`. |
+| Timeline | `home/TimelineAct.tsx` | `pan` | Data in `src/data/profile.ts`. Stacks as a list under reduced motion. |
+| Close | `components/ContactPanel.tsx` | flow | Web3Forms POST; works without JS. |
 
-| Route | File | Notes |
-|---|---|---|
-| `/` | `src/app/page.tsx` | Hero, highlight cards, stats, resume modal |
-| `/profile` | `src/app/profile/page.tsx` | Bio, education, skills grid, resume downloads |
-| `/projects` | `src/app/projects/page.tsx` | Filtered project cards |
-| `/projects/[slug]` | `src/app/projects/[slug]/page.tsx` | Dynamic detail via `useParams()` + `getProjectBySlug()` |
-| `/research` | `src/app/research/page.tsx` | Research card listing |
-| `/research/marl-maps` | `src/app/research/marl-maps/page.tsx` | Static MARL-MAPS deep-dive |
-| `/connect` | `src/app/connect/page.tsx` | Contact form + social links |
+## The signature move: query → field → ranking
 
-### Theme system
+- `src/lib/terms.ts`: the 31 field terms (real stack), each with a regex used for both docs and queries.
+- `src/lib/search.ts`: BM25 over project text + a small alias table for role words. Labelled honestly on the page. To test ranking: `npx tsx` a script that calls `rank('backend, postgres')`.
+- `src/lib/query-store.ts`: the visitor's query. Only `source: 'user'` persists (sessionStorage) and travels to the nav chip, case studies (`Marked`, `MatchNote`) and the contact message.
+- `src/lib/field/field.ts`: WebGL point field + HTML labels with collision avoidance; identical Canvas 2D fallback when WebGL is missing. Term positions are derived from which projects use each term.
 
-`ThemeContext.tsx` manages dark/light mode. Default is `'dark'` (warm-ink variant); `<html>` is server-rendered with the `dark` class so there is no light flash. On mount it reads `localStorage` (key `"theme"`) and a saved choice wins; `prefers-color-scheme` is ignored. Only an explicit toggle is persisted. The `<html>` tag has `suppressHydrationWarning` to avoid SSR/client mismatch on the class.
+## Content
 
-All pages use `'use client'` except `research/page.tsx` (server component with exported `metadata`) — most pages are client components.
+| What | Where |
+|---|---|
+| Projects (order = curated order) | `src/data/projects.ts` |
+| Research | `src/data/research.ts` |
+| Bio, skills, numbers, timeline | `src/data/profile.ts` |
+| Identity, links, résumé URLs, Web3Forms key, portrait | `src/lib/site.ts` (single source; set `PORTRAIT_SRC` after adding `public/portrait.jpg`) |
 
-### Styling conventions ("Engineering Editorial" design system)
+Adding a project: append to `projects.ts`. Routes, sitemap, ranking and the field update automatically. If it uses a tool not in `TERMS`, add the term (max 31).
 
-- **Semantic colors via CSS variables** — the theme is defined once in `globals.css` as `:root` / `.dark` custom properties (`--paper --surface --ink --muted --faint --rule --accent`) and exposed as Tailwind colors in `tailwind.config.ts` (`bg-paper text-ink border-rule text-accent` …). **Do NOT use literal `zinc-`/`emerald-` classes or `dark:` variants** — the variables flip automatically on `.dark`, so every element is themed with a single set of classes.
-- **Accent**: terracotta/vermilion (`--accent`), one accent only — used sparingly.
-- **Typography**: `font-display` = Fraunces (serif headings), `font-serif` = Newsreader (body, default on `<body>`), `font-mono` = JetBrains Mono (labels/meta). Loaded via Google Fonts `<link>` in `layout.tsx`.
-- **Editorial primitives** in `globals.css` `@layer components`: `.eyebrow` (mono uppercase kicker), `.link-underline` (animated underline), `.dropcap` (first-letter), plus `.reveal`/`.reveal-fade`/`.draw-line` staggered load animations with `.delay-1`…`.delay-6`. A `.grain` overlay sits on `<body>`.
-- Section labels read like editorial kickers (`Section 01 — Profile`), not terminal `// SNAKE_CASE`.
-- The `darkMode: 'class'` strategy is set in `tailwind.config.ts`. `max-w-editorial` is the standard page width.
-- `SectionHeader.tsx` is unused dead code (still on the old palette); ignore it.
+## Verify before shipping
 
-### Layout shell
+Run the skill's harness against a production build (needs `npm i --no-save playwright-core` and Chrome):
 
-`src/app/layout.tsx` wraps every page in `ThemeProvider → Navigation → <main> → Footer`. Metadata (title template, OG tags, keywords) is defined here.
+```bash
+npm run build && npx next start -p 4500
+node .claude/skills/scroll-craft/scripts/shoot.mjs --url http://localhost:4500 --out lab/shots
+node .claude/skills/scroll-craft/scripts/shoot.mjs --url http://localhost:4500 --out lab/mobile --width 390 --height 844
+node .claude/skills/scroll-craft/scripts/shoot.mjs --url http://localhost:4500 --out lab/reduced --reduced-motion
+```
 
-### Resume links (hardcoded)
-
-Two Google Drive resume URLs appear in multiple files (each page defines a local `RESUMES` constant):
-- **AI + SDE**: `https://drive.google.com/file/d/1lPMTdrULT4iWPU5typRmVDVlBtF81wHf/view`
-- **Data Engineering**: `https://drive.google.com/file/d/1XJmW1XJ5lQ17fY251xmbZpC3lzsZgviR/view`
-
-These are repeated in `page.tsx` (résumé modal), `profile/page.tsx`, and `connect/page.tsx`. Update all three when the resume changes. The contact form on `/connect` posts to Web3Forms (access key inline in `connect/page.tsx`).
+Then read each `sheet.png`. A green run does not cover a real phone.

@@ -1,37 +1,18 @@
-'use client';
+import type { Metadata } from 'next';
+import WorkList from '@/components/WorkList';
 
-import React, { useEffect } from 'react';
-import { projects } from '@/data/projects';
-import ProjectsGrid from '@/components/ProjectsGrid';
+export const metadata: Metadata = {
+  title: 'Projects',
+  description: 'Six systems by Kumar Priyam: semantic job matching, a WhatsApp clinic queue, multi-agent RL for RAG, a real-time interview platform and data pipelines. Rank them by role or stack.',
+  alternates: { canonical: '/projects' },
+};
 
 export default function ProjectsPage() {
-  useEffect(() => {
-    document.title = 'Projects — Kumar Priyam';
-  }, []);
-
   return (
-    <div>
-      {/* Masthead */}
-      <section className="border-b border-rule">
-        <div className="mx-auto max-w-editorial px-5 py-16 sm:px-8 sm:py-20">
-          <div className="reveal flex items-baseline justify-between">
-            <span className="eyebrow">Section 02 — Index</span>
-            <span className="eyebrow text-faint">{`(${projects.length})`}</span>
-          </div>
-          <h1 className="reveal delay-1 mt-6 font-display text-5xl font-light tracking-[-0.02em] text-ink sm:text-6xl">
-            Projects
-          </h1>
-          <p className="reveal delay-2 mt-5 max-w-xl text-[1.05rem] leading-relaxed text-muted">
-            Scan every project&apos;s stack and measured impact at a glance —
-            open any card for the full case study.
-          </p>
-        </div>
-      </section>
-
-      {/* Project card grid */}
-      <section className="mx-auto max-w-editorial px-5 py-12 sm:px-8 sm:py-16">
-        <ProjectsGrid projects={projects} />
-      </section>
+    <div className="kp-page pb-[var(--sc-section)]">
+      <div className="sc-wrap">
+        <WorkList variant="index" headingId="projects-title" />
+      </div>
     </div>
   );
 }

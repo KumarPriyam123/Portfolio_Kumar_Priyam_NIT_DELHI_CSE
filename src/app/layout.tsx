@@ -1,21 +1,38 @@
-import type { Metadata } from 'next';
-import { ThemeProvider } from '../components/ThemeContext';
-import Navigation from '../components/Navigation';
-import Footer from '../components/Footer';
+import type { Metadata, Viewport } from 'next';
+import localFont from 'next/font/local';
+import Navigation from '@/components/Navigation';
+import Footer from '@/components/Footer';
+import ScrollCraftMount from '@/components/ScrollCraftMount';
+import { SITE } from '@/lib/site';
+import '@/styles/scrollcraft.css';
 import './globals.css';
 
+// All faces are vendored in ./fonts (OFL), so the site needs no font packages
+// and no network at build time.
+const geistSans = localFont({ src: './fonts/Geist-Variable.woff2', variable: '--font-geist-sans', weight: '100 900', display: 'swap' });
+const geistMono = localFont({ src: './fonts/GeistMono-Variable.woff2', variable: '--font-geist-mono', weight: '100 900', display: 'swap' });
+
+const archivo = localFont({
+  src: './fonts/Archivo-wdth.woff2',
+  variable: '--font-archivo',
+  weight: '100 900',
+  display: 'swap',
+  declarations: [{ prop: 'font-stretch', value: '62% 125%' }],
+});
+
 export const metadata: Metadata = {
+  metadataBase: new URL(SITE.url),
   title: {
-    default: 'Kumar Priyam — AI Engineer · SDE · Data Engineer',
-    template: '%s — Kumar Priyam',
+    default: `${SITE.name}: AI Engineer, SDE, Data Engineer`,
+    template: `%s · ${SITE.name}`,
   },
-  description:
-    'B.Tech Computer Science student at NIT Delhi (Class of 2027). Building multi-agent AI systems, full-stack platforms, and scalable data pipelines — from RAG architectures to production ETL.',
+  description: SITE.description,
   keywords: [
     'Kumar Priyam',
     'NIT Delhi',
     'AI Engineer',
     'Software Engineer',
+    'SDE',
     'Data Engineering',
     'Multi-Agent RL',
     'RAG Pipelines',
@@ -24,43 +41,47 @@ export const metadata: Metadata = {
     'Next.js',
     'Full-Stack Developer',
     'Apache Airflow',
+    'pgvector',
   ],
-  authors: [{ name: 'Kumar Priyam' }],
+  authors: [{ name: SITE.name, url: SITE.url }],
+  creator: SITE.name,
+  alternates: { canonical: '/' },
   openGraph: {
-    title: 'Kumar Priyam — AI Engineer · SDE · Data Engineer',
-    description:
-      'B.Tech CS @ NIT Delhi. Building multi-agent AI systems, full-stack platforms, and scalable data pipelines.',
+    title: `${SITE.name}: AI Engineer, SDE, Data Engineer`,
+    description: 'B.Tech CS at NIT Delhi. Multi-agent AI systems, full-stack platforms and data pipelines, from research to production.',
+    url: SITE.url,
+    siteName: SITE.name,
     type: 'website',
+    locale: 'en_IN',
   },
+  twitter: { card: 'summary_large_image', title: `${SITE.name}: AI Engineer, SDE, Data Engineer` },
+  robots: { index: true, follow: true },
 };
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export const viewport: Viewport = {
+  themeColor: '#070a10',
+  colorScheme: 'dark',
+  width: 'device-width',
+  initialScale: 1,
+  viewportFit: 'cover',
+};
+
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className="dark scroll-smooth" style={{ colorScheme: 'dark' }} suppressHydrationWarning>
-      <head>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link
-          rel="preconnect"
-          href="https://fonts.gstatic.com"
-          crossOrigin="anonymous"
-        />
-        <link
-          href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..900;1,9..144,300..600&family=Newsreader:ital,opsz,wght@0,6..72,400..600;1,6..72,400..500&family=JetBrains+Mono:wght@400;500;700&display=swap"
-          rel="stylesheet"
-        />
-      </head>
-      <body className="grain font-serif antialiased bg-paper text-ink transition-colors duration-500">
-        <ThemeProvider>
-          <div className="flex min-h-screen flex-col">
-            <Navigation />
-            <main className="flex-1">{children}</main>
-            <Footer />
-          </div>
-        </ThemeProvider>
+    <html lang="en" className={`${archivo.variable} ${geistSans.variable} ${geistMono.variable}`}>
+      <body>
+        <noscript>
+          {/* Without the engine nothing would ever fade in. Show everything. */}
+          <style>{`[data-sc-cue],[data-sc-in],[data-sc-stagger]>*{opacity:1!important;transform:none!important}.kp-field{display:none}`}</style>
+        </noscript>
+        <a className="kp-skip" href="#main">
+          Skip to content
+        </a>
+        <div className="kp-grain" aria-hidden="true" />
+        <Navigation />
+        <main id="main">{children}</main>
+        <Footer />
+        <ScrollCraftMount />
       </body>
     </html>
   );
